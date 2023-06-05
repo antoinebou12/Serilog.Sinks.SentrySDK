@@ -1,4 +1,4 @@
-# Serilog.Sinks.Sentry
+# Serilog.Sink.Sentry
 
 ## Note
 
