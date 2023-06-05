@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SentryWeb.Scrubbing;
 using Serilog;
-using SharpRaven.Data;
 
 namespace SentryWeb
 {
@@ -19,16 +13,7 @@ namespace SentryWeb
             Configuration = configuration;
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
-                // Insert Sentry DSN here
-                .WriteTo.Sentry(
-                    "", 
-                    dataScrubber: new CustomLogScrubber()
-                )
-                .Enrich.FromLogContext()
-                // Add Http Context for Sentry
-                .Destructure.With<HttpContextDestructingPolicy>()
-                .Filter.ByExcluding(e => e.Exception?.CheckIfCaptured() == true)
+                .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
         }
 
@@ -54,8 +39,8 @@ namespace SentryWeb
 
             app.UseStaticFiles();
 
-            // Add Http Context for Sentry
-            app.AddSentryContext();
+            // Use Serilog request logging. Note: this should be added *after* the calls above to UseExceptionHandler() or UseDeveloperExceptionPage() and before UseMvc()
+            app.UseSerilogRequestLogging();
 
             app.UseMvc(routes =>
             {

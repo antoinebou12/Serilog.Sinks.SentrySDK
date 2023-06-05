@@ -1,9 +1,7 @@
 ﻿using System;
 using Serilog;
-using Serilog.Exceptions;
-using Serilog.Sink.Sentry;
-using SharpRaven;
-using SharpRaven.Data;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace SentryConsole
 {
@@ -11,41 +9,36 @@ namespace SentryConsole
     {
         static void Main(string[] args)
         {
-            // Insert Sentry DSN here
-            var sentryDSN = "";
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
-                .WriteTo.Sentry(sentryDSN)
-                .Enrich.FromLogContext()
-                // Serilog.Exceptions
-                .Enrich.WithExceptionDetails()
+                .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
-            // Explicitly call our error logger
-            Log.Error("Intentional error logged at {TimeStamp}", DateTime.Now.ToLongTimeString());
-
-            // Serilog will not catch uncaught exceptions for console applications, they must be caught explicitly
-
-            // This can be done with Serilog.Exceptions...
             try
             {
+                // Explicitly call our error logger
+                Log.Error("Intentional error logged at {TimeStamp}", DateTime.Now.ToLongTimeString());
+
+                // Trigger an exception
                 ConvertToIntSecondTier();
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error(ex, "An error occurred while converting to integer");
             }
 
-            // ...or with the ravenClient itself
-            var ravenClient = new RavenClient(sentryDSN);
             try
             {
+                // Trigger another exception
                 DivByZeroSecondTier();
             }
             catch (Exception ex)
             {
-                ravenClient.Capture(new SentryEvent(ex));
+                Log.Error(ex, "An error occurred while dividing by zero");
             }
 
             Log.CloseAndFlush();

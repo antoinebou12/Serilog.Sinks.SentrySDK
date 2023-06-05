@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http;
 
 namespace Serilog
 {
@@ -19,7 +19,7 @@ namespace Serilog
             app.Use(
                 next => context =>
                 {
-                    context.Request.EnableRewind();
+                    context.Request.EnableBuffering();
 
                     return next(context);
                 });

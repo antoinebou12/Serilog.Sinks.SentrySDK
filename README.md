@@ -1,34 +1,37 @@
 # Serilog.Sink.Sentry
 
-## Note
+A Serilog sink for Sentry that simplifies error and log management in your applications.
 
-> This is an unofficial library based on [the old Raven SDK](https://github.com/getsentry/raven-csharp/), the only use case for this is legacy projects (.NET Framework 4.5 to 4.6.0)
-> For .NET Framework 4.6.1, .NET Core 2.0, Mono 5.4 or higher, [**please use the new SDK**](https://github.com/getsentry/sentry-dotnet) and [**the Serilog sink**](https://www.nuget.org/packages/Sentry.Serilog).
+## Project Status
 
 [![Build status](https://ci.appveyor.com/api/projects/status/3rtn2dsk5ln6qaup?svg=true)](https://ci.appveyor.com/project/olsh/serilog-Sink-sentry)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=serilog-Sink-sentry&metric=alert_status)](https://sonarcloud.io/dashboard?id=serilog-Sink-sentry)
 
-|   | Package |
-| ------------- | ------------- |
-| Serilog.Sink.Sentry  | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry/)  |
-| Serilog.Sink.Sentry.AspNetCore  | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/)  |
+## Available Packages
 
-A Sentry sink for Serilog.
+|   | Package | Nuget |
+| ------------- | ------------- | ------------- |
+| Serilog.Sink.Sentry  | [Package Link](https://www.nuget.org/packages/Serilog.Sink.Sentry/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry/)  |
+| Serilog.Sink.Sentry.AspNetCore  | [Package Link](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/)  |
 
 ## Installation
 
 The library is available as a [Nuget package](https://www.nuget.org/packages/Serilog.Sink.Sentry/).
+
+You can install it with the following command:
 ```
 Install-Package Serilog.Sink.Sentry
 ```
 
 ## Demos
 
-You can find demo .NET Core apps [here](demos/).
+Demos demonstrating how to use this library can be found [here](demos/).
 
-## Get started
+## Getting Started
 
-### Adding Sentry sink
+### Adding the Sentry Sink
+
+Add the Sentry sink to your Serilog logger configuration, so that the logs will be sent to your Sentry instance. The Sentry DSN must be provided.
 
 ```csharp
 var log = new LoggerConfiguration()
@@ -40,11 +43,45 @@ var log = new LoggerConfiguration()
 log.Error("This error goes to Sentry.");
 ```
 
-### Data scrubbing
+You can also configure Serilog using a JSON configuration. Here's a sample:
 
-Some of the logged content might contain sensitive data and should therefore not be sent to Sentry. When setting up the Sentry Sink it is possible to provide a custom `IScrubber` implementation which will be passed the serialized data that is about to be sent to Sentry for scrubbing / cleaning.
+```json
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "Serilog": {
+      "Using":  [ "Serilog.Sinks.Console", "Serilog.Sinks.File", "Sentry" ],
+      "MinimumLevel": "Debug",
+      "WriteTo": [
+        { "Name": "Console" },
+        { "Name": "File", "Args": { "path": "Logs/log.txt" } },
+        { "Name": "Sentry", "Args": { "dsn": "<YourSentryDsn>" } }
+      ],
+      "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
+      "Destructure": [
+        { "Name": "With", "Args": { "policy": "Sample.CustomPolicy, Sample" } },
+        { "Name": "ToMaximumDepth", "Args": { "maximumDestructuringDepth": 4 } },
+        { "Name": "ToMaximumStringLength", "Args": { "maximumStringLength": 100 } },
+        { "Name": "ToMaximumCollectionCount", "Args": { "maximumCollectionCount": 10 } }
+      ],
+      "Properties": {
+          "Application": "Sample"
+      }
+  }
 
-Adding a scrubber would look like this:
+
+}
+```
+
+### Data Scrubbing
+
+Data scrubbing allows you to sanitize your logs before they are sent to Sentry. This can be useful for removing sensitive information.
+
+To use it, provide a custom `IScrubber` implementation when setting up the Sentry Sink:
 
 ```csharp
 var log = new LoggerConfiguration()
@@ -53,18 +90,18 @@ var log = new LoggerConfiguration()
     .CreateLogger();
 ```
 
-`MyDataScrubber` has to implement the interface `SharpRaven.Logging.IScrubber`. Check the [Web Demo Startup.cs for further details](demos/SentryWeb/Startup.cs) and the [example implementation of a scrubber](demos/SentryWeb/Scrubbing/CustomLogScrubber.cs) .
-
 ### Capturing HttpContext (ASP.NET Core)
 
-In order to capture a user, request body and headers, some additional steps are required.
+To include user, request body, and header information in the logs, some additional setup is required. 
 
-Install the [additional sink](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/) for ASP.NET Core
+First, install the [ASP.NET Core sink](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/) with the command:
+
 ```
 Install-Package Serilog.Sink.Sentry.AspNetCore
 ```
 
-Specify custom HttpContext destructing policy
+Then, update your logger configuration to include a custom `HttpContextDestructingPolicy`:
+
 ```csharp
 var log = new LoggerConfiguration()
     .WriteTo.Sentry("Sentry DSN")
@@ -77,8 +114,9 @@ var log = new LoggerConfiguration()
     .CreateLogger();
 ```
 
-Add Sentry context middleware in Startup.cs
-````csharp
+Finally, add the Sentry context middleware to your `Startup.cs`:
+
+```csharp
 public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 {
     // Add this line
@@ -86,4 +124,6 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 
     // Other stuff
 }
-````
+```
+
+With these steps, your logs will include detailed information about the HTTP context of the requests.
