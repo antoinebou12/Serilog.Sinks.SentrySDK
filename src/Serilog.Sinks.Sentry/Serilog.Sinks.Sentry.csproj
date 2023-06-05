@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>A Sentry sink for Serilog</Description>
+    <VersionPrefix>2.4.3</VersionPrefix>
+    <Authors>Oleg Shevchenko</Authors>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Serilog.Sinks.Sentry</AssemblyName>
+
+    <PackageId>Serilog.Sinks.Sentry</PackageId>
+    <PackageTags>serilog sink sentry logging</PackageTags>
+    <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-sentry/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/olsh/serilog-sinks-sentry</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/olsh/serilog-sinks-sentry</RepositoryUrl>
+    <RootNamespace>Serilog</RootNamespace>
+    
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.0.0" />
+    <PackageReference Include="SharpRaven" Version="2.4.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>
