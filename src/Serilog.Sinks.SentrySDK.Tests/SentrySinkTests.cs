@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic; // for List<>
 using Moq;
 using Sentry;
 using Serilog.Events;
+using Serilog.Parsing; // for MessageTemplateToken
 using Serilog.Sinks.SentrySDK;
 using Xunit;
 
@@ -20,6 +22,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 Dsn = "https://example@sentry.io/0",
                 Release = "test",
                 Environment = "test-environment",
+                Debug = true
             };
             _sentrySink = new SentrySink(_formatProviderMock.Object, sentryOptions, "tag1,tag2");
         }
@@ -31,7 +34,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
 
             _sentrySink.Emit(logEvent);
 
-            // NOTE: Verification of SentrySdk.CaptureMessage() is not directly possible as it's a static method of a static class. 
+            // NOTE: Verification of SentrySdk.CaptureMessage() is not directly possible as it's a static method of a static class.
             // Ideally you would use an adapter or wrapper around the SentrySdk to allow for verification.
         }
 

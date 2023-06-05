@@ -28,15 +28,8 @@ namespace Serilog.Sinks.SentrySDK
             var options = new SentryOptions
             {
                 Dsn = dsn,
-                Active = active,
-                IncludeActivityData = includeActivityData,
-                SendDefaultPii = sendDefaultPii,
-                MaxBreadcrumbs = maxBreadcrumbs,
-                MaxQueueItems = maxQueueItems,
                 Debug = debug,
-                DiagnosticLevel = diagnosticLevel,
                 Environment = environment,
-                ServiceName = serviceName,
                 Release = release
             };
 
