@@ -37,10 +37,10 @@ namespace Serilog
             {
                 scope.Level = level;
                 scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
-                    .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
-                scope.SetTags(logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
-                    .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
-
+                    .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
+                scope.SetTags(
+                    logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
+                        .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
 
                 if (exception == null)
                 {
@@ -52,6 +52,7 @@ namespace Serilog
                 }
             });
         }
+
 
         private static SentryLevel GetSentryLevel(LogEvent logEvent)
         {

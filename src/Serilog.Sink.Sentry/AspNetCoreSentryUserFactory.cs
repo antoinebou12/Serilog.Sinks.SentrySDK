@@ -8,7 +8,7 @@ namespace Serilog
         User Create();
     }
 
-    internal class SentryUserFactory : ISentryUserFactory
+    public class SentryUserFactory : ISentryUserFactory
     {
         private readonly ISentryHttpContext _httpContext;
 

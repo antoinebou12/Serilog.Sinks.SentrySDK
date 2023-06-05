@@ -1,3 +1,5 @@
+extern alias SinkSentry;
+
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Http;
@@ -5,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 
 using Serilog;
-using Serilog.Sink.Sentry;
 
 using Xunit;
 
@@ -13,13 +14,13 @@ namespace Serilog.Sink.Sentry.Tests
 {
     public class SentryRequestFactoryTests
     {
-        private readonly ISentryRequestFactory _factory;
-        private readonly Mock<ISentryHttpContext> _httpContextMock;
+        private readonly SinkSentry::Serilog.Sink.Sentry.ISentryRequestFactory _factory;
+        private readonly Mock<SinkSentry::Serilog.Sink.Sentry.ISentryHttpContext> _httpContextMock;
 
         public SentryRequestFactoryTests()
         {
-            _httpContextMock = new Mock<ISentryHttpContext>();
-            _factory = new SentryRequestFactory(_httpContextMock.Object);
+            _httpContextMock = new Mock<SinkSentry::Serilog.Sink.Sentry.ISentryHttpContext>();
+            _factory = new SinkSentry::Serilog.Sink.Sentry.SentryRequestFactory(_httpContextMock.Object);
         }
 
         [Fact]

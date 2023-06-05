@@ -5,8 +5,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+    <Reference Include="Serilog.Sink.Sentry">
+        <HintPath>..\Serilog.Sink.Sentry\bin\Debug\net6.0\Serilog.Sink.Sentry.dll</HintPath>
+        <Aliases>SinkSentry</Aliases>
+    </Reference>
+    </ItemGroup>
+
+
+    <ItemGroup>
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="Moq" Version="4.16.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
