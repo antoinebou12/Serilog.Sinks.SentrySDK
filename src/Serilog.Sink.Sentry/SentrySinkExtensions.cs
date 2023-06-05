@@ -24,7 +24,7 @@ namespace Serilog
                 Environment = environment,
             };
 
-            var sink = new SentrySink(formatProvider, options.Dsn, options.Release, options.Environment, tags);
+            var sink = new SentrySink(formatProvider, options, tags);
             return loggerConfiguration.Sink(sink, restrictedToMinimumLevel);
         }
     }

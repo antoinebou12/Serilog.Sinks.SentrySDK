@@ -12,15 +12,11 @@ namespace Serilog
         private readonly string[] _tags;
         private readonly SentryOptions _options;
         private readonly IDisposable _sentry;
-        public SentrySink(IFormatProvider formatProvider, string dsn, string release, string environment, string tags)
+
+        public SentrySink(IFormatProvider formatProvider, SentryOptions options, string tags)
         {
             _formatProvider = formatProvider;
-            _options = new SentryOptions
-            {
-                Dsn = dsn,
-                Release = release,
-                Environment = environment
-            };
+            _options = options;
             _tags = string.IsNullOrWhiteSpace(tags) ? new string[0] : tags.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
 
             // Initialize the SDK
@@ -29,30 +25,54 @@ namespace Serilog
 
         public void Emit(LogEvent logEvent)
         {
-            var exception = logEvent.Exception;
-            var message = logEvent.RenderMessage(_formatProvider);
             var level = GetSentryLevel(logEvent);
+            var transaction = SentrySdk.StartTransaction(
+                name: "transaction name",
+                operation: "operation name"
+            );
 
-            SentrySdk.WithScope(scope =>
+            try
             {
-                scope.Level = level;
-                scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
-                    .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
-                scope.SetTags(
-                    logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
-                        .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
+                SentrySdk.WithScope(scope =>
+                {
+                    scope.Level = level;
+                    scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
+                        .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
+                    scope.SetTags(
+                        logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
+                            .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
 
-                if (exception == null)
-                {
-                    SentrySdk.CaptureMessage(message, level);
-                }
-                else
-                {
-                    SentrySdk.CaptureException(exception);
-                }
-            });
+                    var span = transaction.StartChild("operation name");
+                    try
+                    {
+                        if (logEvent.Exception == null)
+                        {
+                            SentrySdk.CaptureMessage(logEvent.RenderMessage(_formatProvider), level);
+                        }
+                        else
+                        {
+                            SentrySdk.CaptureException(logEvent.Exception);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // If an error occurs, set the status of the span to failed.
+                        span.Status = SpanStatus.InternalError;
+                        throw;
+                    }
+                    finally
+                    {
+                        // Regardless of outcome, finish the span.
+                        span.Finish();
+                    }
+                });
+            }
+            finally
+            {
+                // Regardless of outcome, finish the transaction.
+                transaction.Finish();
+            }
         }
-
 
         private static SentryLevel GetSentryLevel(LogEvent logEvent)
         {
@@ -78,6 +98,5 @@ namespace Serilog
 
             return logEventPropertyValue != null ? logEventPropertyValue.ToString(null, formatProvider) : null;
         }
-
     }
 }

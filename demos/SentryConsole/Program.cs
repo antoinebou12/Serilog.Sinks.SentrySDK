@@ -2,6 +2,8 @@
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Serilog.Sinks.Sentry;
+using Serilog.Events;
 
 namespace SentryConsole
 {
@@ -55,6 +57,14 @@ namespace SentryConsole
         static int DivByZero()
         {
             var i = 0;
+
+            if (i == 0)
+            {
+                // Handle the error, maybe by returning a default value or logging the error
+                Log.Error("Attempted division by zero");
+                return 0;
+            }
+
             var j = 1 / i;
             return j;
         }
@@ -68,7 +78,16 @@ namespace SentryConsole
         static int ConvertToInt()
         {
             var s = "hello world";
-            return Convert.ToInt32(s);
+
+            if (!int.TryParse(s, out int result))
+            {
+                // Handle the error, maybe by returning a default value or logging the error
+                Log.Error("Failed to convert string to integer");
+                return 0;
+            }
+
+            return result;
         }
+
     }
 }
