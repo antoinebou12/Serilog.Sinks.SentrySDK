@@ -2,10 +2,10 @@
 #addin nuget:?package=Cake.Sonar
 
 var target = Argument("target", "Default");
-var projectName = Argument("project", "Serilog.Sink.Sentry");
+var projectName = Argument("project", "Serilog.Sinks.SentrySDK");
 
 var buildConfiguration = "Release";
-var solutionName = "Serilog.Sink.Sentry";
+var solutionName = "Serilog.Sinks.SentrySDK";
 var solutionFileName = string.Format("./src/{0}.sln", solutionName);
 var projectFolder = string.Format("./src/{0}/", projectName);
 var projectFile = string.Format("{0}{1}.csproj", projectFolder, projectName);
@@ -46,7 +46,7 @@ Task("SonarBegin")
         Url = "https://sonarcloud.io",
         Login = EnvironmentVariable("sonar:apikey"),
         Key = "serilog-sink-sentry",
-        Name = "Serilog.Sink.Sentry",
+        Name = "Serilog.Sinks.SentrySDK",
         ArgumentCustomization = args => args
             .Append($"/o:olsh-github"),
         Version = "1.0.0.0"

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
     /// <summary>
     ///     Contains extensions methods for an application.

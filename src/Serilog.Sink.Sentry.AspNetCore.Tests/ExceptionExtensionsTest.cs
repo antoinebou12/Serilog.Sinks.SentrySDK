@@ -1,4 +1,7 @@
 ﻿using System;
+
+using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Tests

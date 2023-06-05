@@ -1,6 +1,9 @@
 ﻿using Moq;
+
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Tests

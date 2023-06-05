@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
     public class AspCoreHttpContextAdapter : ISentryHttpContext
     {

@@ -3,8 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+
 using Microsoft.AspNetCore.Http;
+
 using Moq;
+
+using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Tests

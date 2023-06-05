@@ -4,7 +4,7 @@ using Serilog.Core;
 using Serilog.Events;
 using Sentry;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK
 {
     public class SentrySink : ILogEventSink
     {

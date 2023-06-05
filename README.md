@@ -1,4 +1,4 @@
-# Serilog.Sink.Sentry
+# Serilog.Sinks.SentrySDK
 
 A Serilog sink for Sentry that simplifies error and log management in your applications.
 
@@ -11,16 +11,16 @@ A Serilog sink for Sentry that simplifies error and log management in your appli
 
 |   | Package | Nuget |
 | ------------- | ------------- | ------------- |
-| Serilog.Sink.Sentry  | [Package Link](https://www.nuget.org/packages/Serilog.Sink.Sentry/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry/)  |
-| Serilog.Sink.Sentry.AspNetCore  | [Package Link](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sink.Sentry.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/)  |
+| Serilog.Sinks.SentrySDK  | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)  |
+| Serilog.Sinks.SentrySDK.AspNetCore  | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/)  |
 
 ## Installation
 
-The library is available as a [Nuget package](https://www.nuget.org/packages/Serilog.Sink.Sentry/).
+The library is available as a [Nuget package](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/).
 
 You can install it with the following command:
 ```
-Install-Package Serilog.Sink.Sentry
+Install-Package Serilog.Sinks.SentrySDK
 ```
 
 ## Demos
@@ -33,15 +33,6 @@ Demos demonstrating how to use this library can be found [here](demos/).
 
 Add the Sentry sink to your Serilog logger configuration, so that the logs will be sent to your Sentry instance. The Sentry DSN must be provided.
 
-```csharp
-var log = new LoggerConfiguration()
-    .WriteTo.Sentry("Sentry DSN")
-    .Enrich.FromLogContext()
-    .CreateLogger();
-
-// By default, only messages with level errors and higher are captured
-log.Error("This error goes to Sentry.");
-```
 
 You can also configure Serilog using a JSON configuration. Here's a sample:
 
@@ -54,27 +45,47 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
     }
   },
   "Serilog": {
-      "Using":  [ "Serilog.Sinks.Console", "Serilog.Sinks.File", "Sentry" ],
+      "Using":  ["Serilog.Sinks.Console", "Serilog.Sinks.File", "Serilog.Sinks.SentrySDK"],
       "MinimumLevel": "Debug",
       "WriteTo": [
         { "Name": "Console" },
         { "Name": "File", "Args": { "path": "Logs/log.txt" } },
-        { "Name": "Sentry", "Args": { "dsn": "<YourSentryDsn>" } }
+        { "Name": "Sentry", "Args": {
+          "dsn": "<YourSentryDsn>",
+          "active": true,
+          "includeActivityData": true,
+          "sendDefaultPii": true,
+          "maxBreadcrumbs": 200,
+          "maxQueueItems": 100,
+          "debug": true,
+          "diagnosticLevel": "Error",
+          "environment": "Development",
+          "serviceName": "Sample",
+          "release": "<ReleaseName>"
+        } }
       ],
       "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-      "Destructure": [
-        { "Name": "With", "Args": { "policy": "Sample.CustomPolicy, Sample" } },
-        { "Name": "ToMaximumDepth", "Args": { "maximumDestructuringDepth": 4 } },
-        { "Name": "ToMaximumStringLength", "Args": { "maximumStringLength": 100 } },
-        { "Name": "ToMaximumCollectionCount", "Args": { "maximumCollectionCount": 10 } }
-      ],
       "Properties": {
           "Application": "Sample"
       }
   }
-
-
 }
+
+```
+
+```csharp
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+    var log = new LoggerConfiguration()
+              .ReadFrom.Configuration(configuration)
+              .Enrich.FromLogContext()
+              .CreateLogger();
+
+// By default, only messages with level errors and higher are captured
+log.Error("This error goes to Sentry.");
 ```
 
 ### Data Scrubbing
@@ -94,10 +105,10 @@ var log = new LoggerConfiguration()
 
 To include user, request body, and header information in the logs, some additional setup is required. 
 
-First, install the [ASP.NET Core sink](https://www.nuget.org/packages/Serilog.Sink.Sentry.AspNetCore/) with the command:
+First, install the [ASP.NET Core sink](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) with the command:
 
 ```
-Install-Package Serilog.Sink.Sentry.AspNetCore
+Install-Package Serilog.Sinks.SentrySDK.AspNetCore
 ```
 
 Then, update your logger configuration to include a custom `HttpContextDestructingPolicy`:

@@ -6,16 +6,16 @@
     <Authors>Antoine Boucher</Authors>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sink.Sentry</AssemblyName>
+    <AssemblyName>Serilog.Sinks.SentrySDK</AssemblyName>
 
-    <PackageId>Serilog.Sink.Sentry</PackageId>
+    <PackageId>Serilog.Sinks.SentrySDK</PackageId>
     <PackageTags>Serilog Sink Sentry Logging</PackageTags>
-    <PackageReleaseNotes>https://github.com/antoinebou12/serilog.sink.sentry/releases</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/antoinebou12/serilog.sink.sentry</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/antoinebou12/serilog.sink.sentry</RepositoryUrl>
+    <RepositoryUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</RepositoryUrl>
     <RootNamespace>Serilog</RootNamespace>
 
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-        <_Parameter1>Serilog.Sink.Sentry.Tests</_Parameter1>
+        <_Parameter1>Serilog.Sinks.SentrySDK.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

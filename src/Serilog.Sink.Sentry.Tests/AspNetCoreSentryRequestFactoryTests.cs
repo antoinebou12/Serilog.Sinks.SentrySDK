@@ -8,9 +8,9 @@ using Serilog;
 
 using Xunit;
 
-using Serilog.Sink.Sentry;
+using Serilog.Sinks.SentrySDK;
 
-namespace Serilog.Sink.Sentry.Tests
+namespace Serilog.Sinks.SentrySDK.Tests
 {
     public class SentryRequestFactoryTests
     {

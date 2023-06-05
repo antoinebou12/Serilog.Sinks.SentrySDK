@@ -2,7 +2,7 @@
 
 using Sentry;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK
 {
     public interface ISentryRequestFactory
     {

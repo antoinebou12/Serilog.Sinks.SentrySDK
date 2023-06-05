@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Sentry;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK
 {
     public interface ISentryUserFactory
     {

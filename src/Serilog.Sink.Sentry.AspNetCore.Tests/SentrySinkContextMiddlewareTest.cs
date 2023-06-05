@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+
 using Moq;
+
+using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Tests

@@ -5,11 +5,11 @@ using Moq;
 using Sentry;
 
 using Serilog;
-using Serilog.Sink.Sentry;
+using Serilog.Sinks.SentrySDK;
 
 using Xunit;
 
-namespace Serilog.Sink.Sentry.Tests
+namespace Serilog.Sinks.SentrySDK.Tests
 {
     public class SentryUserFactoryTests
     {

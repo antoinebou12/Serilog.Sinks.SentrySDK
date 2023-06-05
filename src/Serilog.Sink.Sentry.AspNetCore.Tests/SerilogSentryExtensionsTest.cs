@@ -1,5 +1,8 @@
 ﻿using Moq;
+
 using Serilog.Configuration;
+using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace YourNamespace.Tests

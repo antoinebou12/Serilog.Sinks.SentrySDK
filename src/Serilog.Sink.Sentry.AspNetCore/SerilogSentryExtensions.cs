@@ -3,29 +3,45 @@ using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
 
-namespace YourNamespace
+namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
     public static class SerilogSentryExtensions
     {
-        /// <summary>
-        /// Adds a sink that sends log events to the Sentry.
-        /// </summary>
-        /// <param name="loggerConfiguration">The logger configuration.</param>
-        /// <param name="dsn">The Sentry DSN.</param>
-        /// <param name="minimumLevel">The minimum log event level required 
-        /// in order to write an event to the sink.</param>
-        /// <returns>Logger configuration, allowing configuration to continue.</returns>
-        /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
         public static LoggerConfiguration Sentry(
             this LoggerSinkConfiguration loggerConfiguration,
             string dsn,
+            bool active,
+            bool includeActivityData,
+            bool sendDefaultPii,
+            int maxBreadcrumbs,
+            int maxQueueItems,
+            bool debug,
+            string diagnosticLevel,
+            string environment,
+            string serviceName,
+            string release,
             LogEventLevel minimumLevel = LogEventLevel.Error)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (dsn == null) throw new ArgumentNullException(nameof(dsn));
 
+            var options = new SentryOptions
+            {
+                Dsn = dsn,
+                IsActive = active,
+                IncludeActivityData = includeActivityData,
+                SendDefaultPii = sendDefaultPii,
+                MaxBreadcrumbs = maxBreadcrumbs,
+                MaxQueueItems = maxQueueItems,
+                Debug = debug,
+                DiagnosticLevel = diagnosticLevel,
+                Environment = environment,
+                ServiceName = serviceName,
+                Release = release
+            };
+
             return loggerConfiguration.Sink(
-                new SentrySink(dsn, formatProvider: null),
+                new SentrySink(options, formatProvider: null),
                 restrictedToMinimumLevel: minimumLevel);
         }
     }

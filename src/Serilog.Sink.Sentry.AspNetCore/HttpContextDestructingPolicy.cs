@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace Serilog
+namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
     /// <inheritdoc />
     public class HttpContextDestructingPolicy : IDestructuringPolicy
