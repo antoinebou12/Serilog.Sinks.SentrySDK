@@ -1,7 +1,7 @@
 ﻿using System;
 using Serilog;
 using Serilog.Exceptions;
-using Serilog.Sinks.Sentry;
+using Serilog.Sink.Sentry;
 using SharpRaven;
 using SharpRaven.Data;
 

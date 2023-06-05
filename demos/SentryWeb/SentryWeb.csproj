@@ -8,9 +8,9 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
     <PackageReference Include="NewtonSoft.json" Version="13.0.1" />
     <PackageReference Include="Serilog" Version="2.6.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.Sentry" Version="2.1.0" />
-    <PackageReference Include="Serilog.Sinks.Sentry.AspNetCore" Version="2.0.1" />
+    <PackageReference Include="Serilog.Sink.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sink.Sentry" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sink.Sentry.AspNetCore" Version="2.0.1" />
     <PackageReference Include="SharpRaven" Version="2.2.0" />
   </ItemGroup>
 

@@ -6,16 +6,16 @@
     <Authors>Oleg Shevchenko</Authors>
     <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sinks.Sentry.AspNetCore</AssemblyName>
+    <AssemblyName>Serilog.Sink.Sentry.AspNetCore</AssemblyName>
 
-    <PackageId>Serilog.Sinks.Sentry.AspNetCore</PackageId>
+    <PackageId>Serilog.Sink.Sentry.AspNetCore</PackageId>
     <PackageTags>serilog sink sentry logging core</PackageTags>
-    <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-sentry/releases</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/olsh/serilog-sinks-sentry</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/olsh/serilog-Sink-sentry/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/olsh/serilog-Sink-sentry</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/olsh/serilog-sinks-sentry</RepositoryUrl>
+    <RepositoryUrl>https://github.com/olsh/serilog-Sink-sentry</RepositoryUrl>
     <RootNamespace>Serilog</RootNamespace>
     
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Serilog.Sinks.Sentry\Serilog.Sinks.Sentry.csproj" />
+    <ProjectReference Include="..\Serilog.Sink.Sentry\Serilog.Sink.Sentry.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">

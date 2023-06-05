@@ -6,16 +6,16 @@
     <Authors>Oleg Shevchenko</Authors>
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sinks.Sentry</AssemblyName>
+    <AssemblyName>Serilog.Sink.Sentry</AssemblyName>
 
-    <PackageId>Serilog.Sinks.Sentry</PackageId>
+    <PackageId>Serilog.Sink.Sentry</PackageId>
     <PackageTags>serilog sink sentry logging</PackageTags>
-    <PackageReleaseNotes>https://github.com/olsh/serilog-sinks-sentry/releases</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/olsh/serilog-sinks-sentry</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/olsh/serilog-Sink-sentry/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/olsh/serilog-Sink-sentry</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/olsh/serilog-sinks-sentry</RepositoryUrl>
+    <RepositoryUrl>https://github.com/olsh/serilog-Sink-sentry</RepositoryUrl>
     <RootNamespace>Serilog</RootNamespace>
     
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>

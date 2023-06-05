@@ -1,11 +1,11 @@
 version: 1.0.{build}
 image: Visual Studio 2019
 install:
-  - dotnet tool install -g Cake.Tool --version 0.37.0 
+  - dotnet tool install -g Cake.Tool --version 0.37.0
 build_script:
 - cmd: dotnet cake -Target=Sonar
-- cmd: dotnet cake -Target=CreateArtifact -Project=Serilog.Sinks.Sentry
-- cmd: dotnet cake -Target=CreateArtifact -Project=Serilog.Sinks.Sentry.AspNetCore
+- cmd: dotnet cake -Target=CreateArtifact -Project=Serilog.Sink.Sentry
+- cmd: dotnet cake -Target=CreateArtifact -Project=Serilog.Sink.Sentry.AspNetCore
 test: off
 cache:
   - '%USERPROFILE%\.sonar\cache'
