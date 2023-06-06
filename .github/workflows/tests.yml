@@ -59,11 +59,17 @@ jobs:
       - name: Test - Serilog.Sinks.SentrySDK.Tests
         run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./reports/ src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
-      - name: Upload coverage to GitHub Artifacts
+      - name: Upload coverage SentrySDK.AspNetCore.Tests to GitHub Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage
-          path: ./reports/
+          name: SentrySDK.AspNetCore.Tests
+          path: src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports
+
+      - name: Upload coverage SentrySDK.Tests to GitHub Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: SentrySDK.Tests
+          path: src/Serilog.Sinks.SentrySDK.Tests/reports
 
   coverage:
       needs: test
@@ -72,11 +78,17 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v3
 
-        - name: Download reports
+        - name: Download reports SentrySDK.AspNetCore.Tests
           uses: actions/download-artifact@v3
           with:
-            name: code-coverage
+            name: SentrySDK.AspNetCore.Tests
             path: ./reports/
+
+        - name: Download reports SentrySDK.Tests
+          uses: actions/download-artifact@v3
+          with:
+              name: SentrySDK.Tests
+              path: ./reports/
 
         - name: Codecov
           uses: codecov/codecov-action@v2
