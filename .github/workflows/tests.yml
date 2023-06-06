@@ -33,10 +33,15 @@ jobs:
         dotnet-version: 6.0.100
 
     - name: Build - Serilog.Sinks.SentrySDK
-      run: dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --no-restore
+      run: |
+        dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+        dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release
 
     - name: Build - Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --no-restore
+      run: |
+        dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
+        dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release
+
 
 
   test:
