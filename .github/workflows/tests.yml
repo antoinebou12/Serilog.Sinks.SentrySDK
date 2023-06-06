@@ -8,7 +8,7 @@ jobs:
   restore:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
@@ -25,7 +25,7 @@ jobs:
     needs: restore
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
@@ -43,7 +43,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
