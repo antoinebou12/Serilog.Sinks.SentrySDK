@@ -59,9 +59,9 @@ jobs:
     - name: Restore dependencies - Serilog.Sinks.SentrySDK.AspNetCore
       run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
     - name: Pack Serilog.Sinks.SentrySDK
-      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --no-build --configuration Release --output nupkgs
+      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --no-build --configuration Release --output nupkgs
+      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output nupkgs
 
   push:
     needs: package

@@ -6,6 +6,9 @@ using Sentry;
 
 namespace Serilog.Sinks.SentrySDK
 {
+    /// <summary>
+    /// Provides a sink that directs log events to the Sentry service.
+    /// </summary>
     public class SentrySink : ILogEventSink
     {
         private readonly IFormatProvider _formatProvider;
@@ -13,6 +16,12 @@ namespace Serilog.Sinks.SentrySDK
         private readonly SentryOptions _options;
         private readonly IDisposable _sentry;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SentrySink"/> class.
+        /// </summary>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="options">The Sentry options.</param>
+        /// <param name="tags">The tags.</param>
         public SentrySink(IFormatProvider formatProvider, SentryOptions options, string tags)
         {
             _formatProvider = formatProvider;
@@ -23,6 +32,10 @@ namespace Serilog.Sinks.SentrySDK
             _sentry = SentrySdk.Init(_options);
         }
 
+        /// <summary>
+        /// Emit the log event to the sink.
+        /// </summary>
+        /// <param name="logEvent">The log event to emit.</param>
         public void Emit(LogEvent logEvent)
         {
             var level = GetSentryLevel(logEvent);
@@ -74,6 +87,11 @@ namespace Serilog.Sinks.SentrySDK
             }
         }
 
+        /// <summary>
+        /// Maps a Serilog event level to a Sentry level.
+        /// </summary>
+        /// <param name="logEvent">The log event.</param>
+        /// <returns>The Sentry level.</returns>
         private static SentryLevel GetSentryLevel(LogEvent logEvent)
         {
             return logEvent.Level switch
@@ -88,6 +106,12 @@ namespace Serilog.Sinks.SentrySDK
             };
         }
 
+        /// <summary>
+        /// Renders the log event property value as a string.
+        /// </summary>
+        /// <param name="logEventPropertyValue">The log event property value.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <returns>A string representation of the log event property value.</returns>
         private static string Render(LogEventPropertyValue logEventPropertyValue, IFormatProvider formatProvider)
         {
             if (logEventPropertyValue is ScalarValue scalarValue && scalarValue.Value is string stringValue)
