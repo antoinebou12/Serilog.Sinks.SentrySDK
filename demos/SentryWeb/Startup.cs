@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.IO;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
 using Serilog;
+using Serilog.Sinks.SentrySDK.AspNetCore;
 
 namespace SentryWeb
 {
@@ -11,22 +17,30 @@ namespace SentryWeb
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
+            ConfigureLogging();
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        private void ConfigureLogging()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                // Add Http Context for Sentry
+                .Destructure.With<HttpContextDestructingPolicy>()
+                .Filter.ByExcluding(e => e.Exception?.CheckIfCaptured() == true)
+                .CreateLogger();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddHttpContextAccessor();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -35,19 +49,22 @@ namespace SentryWeb
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             app.UseStaticFiles();
+            app.UseRouting();
+            app.AddSentryContext();
 
-            // Use Serilog request logging. Note: this should be added *after* the calls above to UseExceptionHandler() or UseDeveloperExceptionPage() and before UseMvc()
-            app.UseSerilogRequestLogging();
-
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // Example usage of logging an error
+            // Log.Error("A fake error occurred 1");
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
-using Serilog;
-using Microsoft.Extensions.Configuration;
 using System.IO;
-using Serilog.Sinks.Sentry;
+
+using Microsoft.Extensions.Configuration;
+
+using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.SentrySDK.AspNetCore;
 
 namespace SentryConsole
 {

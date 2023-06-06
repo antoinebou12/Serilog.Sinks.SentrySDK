@@ -1,19 +1,18 @@
-using System.Text.RegularExpressions;
-using SharpRaven.Logging;
+using Serilog.Events;
+using Serilog.Core;
 
 namespace SentryWeb.Scrubbing
 {
-    /// <summary>
-    /// Silly example of replacing zero with hero when the divide by zero exception is thrown.
-    /// </summary>
-    public class DivisionByZeroFilter : IFilter
+    public class DivisionByZeroFilter : ILogEventEnricher
     {
-        private static readonly Regex phoneRegex =
-            new Regex("zero", RegexOptions.Compiled);
-
-        public string Filter(string input)
+        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
         {
-            return phoneRegex.Replace(input, "##-HERO-##");
+            // Replace "zero" with "##-HERO-##" in the log event message
+            var filteredMessage = logEvent.MessageTemplate.Text.Replace("zero", "##-HERO-##");
+            var messageProperty = propertyFactory.CreateProperty("Message", filteredMessage);
+
+            // Update the log event with the filtered message property
+            logEvent.AddOrUpdateProperty(messageProperty);
         }
     }
 }
