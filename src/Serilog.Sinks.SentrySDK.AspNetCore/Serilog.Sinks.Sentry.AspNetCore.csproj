@@ -16,7 +16,7 @@
     <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</RepositoryUrl>
-    <RootNamespace>Serilog</RootNamespace>
+    <RootNamespace>Serilog.Sinks.SentrySDK.AspNetCore</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
