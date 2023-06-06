@@ -1,30 +1,33 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Serilog.Context;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
-    /// <summary>
-    ///     Contains extensions methods for an application.
-    /// </summary>
-    public static class SentrySinkContextMiddlewareExtensions
+    internal class SentrySinkContextMiddleware
     {
-        /// <summary>
-        ///     Adds Sentry context middleware to the app.
-        /// </summary>
-        /// <param name="app">The application.</param>
-        /// <returns>The application.</returns>
-        // ReSharper disable once StyleCop.SA1625
-        public static IApplicationBuilder AddSentryContext(this IApplicationBuilder app)
+        private readonly RequestDelegate _next;
+
+        public SentrySinkContextMiddleware(RequestDelegate next)
         {
-            app.Use(
-                next => context =>
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            using (LogContext.PushProperty(SentrySinkConstants.HttpContextKey, new AspCoreHttpContextAdapter(context), true))
+            {
+                try
                 {
-                    context.Request.EnableBuffering();
-
-                    return next(context);
-                });
-
-            return app.UseMiddleware<SentrySinkContextMiddleware>();
+                    await _next(context);
+                }
+                catch (Exception e)
+                {
+                    Log.Logger.Error(e, "Connection id \"{TraceIdentifier}\": An unhandled exception was thrown by the application.", context.TraceIdentifier);
+                    throw;
+                }
+            }
         }
     }
 }

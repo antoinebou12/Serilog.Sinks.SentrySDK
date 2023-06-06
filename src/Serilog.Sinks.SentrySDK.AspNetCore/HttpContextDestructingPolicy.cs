@@ -1,26 +1,25 @@
-﻿using Serilog.Core;
+﻿using System;
+using Sentry;
+
+using Serilog;
+using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.SentrySDK;
+
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
-    /// <inheritdoc />
     public class HttpContextDestructingPolicy : IDestructuringPolicy
     {
-        /// <inheritdoc />
-        public bool TryDestructure(
-            object value,
-            ILogEventPropertyValueFactory propertyValueFactory,
-            out LogEventPropertyValue result)
+        public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, out LogEventPropertyValue result)
         {
             if (value is ISentryHttpContext)
             {
                 result = new ScalarValue(value);
-
                 return true;
             }
 
             result = null;
-
             return false;
         }
     }

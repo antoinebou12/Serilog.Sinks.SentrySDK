@@ -2,11 +2,12 @@
 
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.SentrySDK;
 using Serilog.Sinks.SentrySDK.AspNetCore;
 
 using Xunit;
 
-namespace Serilog.Tests
+namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 {
     public class HttpContextDestructingPolicyTests
     {
@@ -33,13 +34,13 @@ namespace Serilog.Tests
         [Fact]
         public void TryDestructure_ReturnsTrue_WhenValueIsISentryHttpContext()
         {
-            object value = Mock.Of<ISentryHttpContext>();
+            var sentryHttpContext = Mock.Of<ISentryHttpContext>();
 
-            bool result = _policy.TryDestructure(value, _valueFactoryMock.Object, out LogEventPropertyValue destructuredValue);
+            bool result = _policy.TryDestructure(sentryHttpContext, _valueFactoryMock.Object, out LogEventPropertyValue destructuredValue);
 
             Assert.True(result);
             Assert.IsType<ScalarValue>(destructuredValue);
-            Assert.Equal(value, ((ScalarValue)destructuredValue).Value);
+            Assert.Equal(sentryHttpContext, ((ScalarValue)destructuredValue).Value);
         }
     }
 }

@@ -1,43 +1,32 @@
-﻿using Moq;
-
-using Serilog.Configuration;
+﻿using Microsoft.AspNetCore.Builder; // Add this line
+using Microsoft.AspNetCore.Http;
+using Moq;
 using Serilog.Sinks.SentrySDK.AspNetCore;
-
 using Xunit;
 
-namespace YourNamespace.Tests
+namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 {
-    public class SerilogSentryExtensionsTests
+    public class SentrySinkContextMiddlewareExtensionsTests
     {
-        private readonly Mock<LoggerSinkConfiguration> _loggerSinkConfigurationMock;
-        private const string Dsn = "https://example@sentry.io/123";
+        private readonly Mock<IApplicationBuilder> _appMock;
 
-        public SerilogSentryExtensionsTests()
+        public SentrySinkContextMiddlewareExtensionsTests()
         {
-            _loggerSinkConfigurationMock = new Mock<LoggerSinkConfiguration>();
+            _appMock = new Mock<IApplicationBuilder>();
         }
 
         [Fact]
-        public void Sentry_ShouldCreateSink_WhenDsnIsProvided()
+        public void AddSentryContext_ShouldUseMiddleware()
         {
-            _loggerSinkConfigurationMock.Setup(lsc => lsc.Sink(It.IsAny<SentrySink>(), It.IsAny<LogEventLevel>())).Returns(_loggerSinkConfigurationMock.Object);
+            _appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>())).Returns(_appMock.Object);
+            _appMock.Setup(app => app.UseMiddleware<SentrySinkContextMiddleware>()).Returns(_appMock.Object);
 
-            var result = _loggerSinkConfigurationMock.Object.Sentry(Dsn);
+            var app = _appMock.Object.AddSentryContext();
 
-            _loggerSinkConfigurationMock.Verify(lsc => lsc.Sink(It.IsAny<SentrySink>(), It.IsAny<LogEventLevel>()), Times.Once);
-            Assert.Equal(_loggerSinkConfigurationMock.Object, result);
-        }
+            _appMock.Verify(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()), Times.Once);
+            _appMock.Verify(app => app.UseMiddleware<SentrySinkContextMiddleware>(), Times.Once);
 
-        [Fact]
-        public void Sentry_ShouldThrowArgumentNullException_WhenLoggerConfigurationIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => ((LoggerSinkConfiguration)null).Sentry(Dsn));
-        }
-
-        [Fact]
-        public void Sentry_ShouldThrowArgumentNullException_WhenDsnIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _loggerSinkConfigurationMock.Object.Sentry(null));
+            Assert.Equal(_appMock.Object, app);
         }
     }
 }

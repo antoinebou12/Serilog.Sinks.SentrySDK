@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
+using System.Security.Principal;
+
 using Microsoft.AspNetCore.Http;
+
+using Serilog.Sinks.SentrySDK;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
@@ -29,7 +32,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
 
         public string RequestQueryString => _httpContext.Request.QueryString.ToString();
 
-        public ClaimsPrincipal User => _httpContext.User;
+        public IPrincipal User => _httpContext.User as IPrincipal;
 
         public object GetRequestBody()
         {

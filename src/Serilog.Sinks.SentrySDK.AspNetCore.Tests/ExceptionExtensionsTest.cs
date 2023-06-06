@@ -4,7 +4,7 @@ using Serilog.Sinks.SentrySDK.AspNetCore;
 
 using Xunit;
 
-namespace Serilog.Tests
+namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 {
     public class ExceptionExtensionsTests
     {

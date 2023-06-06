@@ -3,16 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Principal;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 using Moq;
 
+using Serilog.Sinks.SentrySDK;
 using Serilog.Sinks.SentrySDK.AspNetCore;
 
 using Xunit;
 
-namespace Serilog.Tests
+namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 {
     public class AspCoreHttpContextAdapterTests
     {
@@ -89,7 +92,7 @@ namespace Serilog.Tests
             var identity = new ClaimsIdentity(claims, "Test Auth Type");
             _httpContext.User = new ClaimsPrincipal(identity);
 
-            Assert.Equal(_httpContext.User, _aspCoreHttpContextAdapter.User);
+            Assert.Equal(_httpContext.User as IPrincipal, _aspCoreHttpContextAdapter.User);
         }
 
         [Fact]

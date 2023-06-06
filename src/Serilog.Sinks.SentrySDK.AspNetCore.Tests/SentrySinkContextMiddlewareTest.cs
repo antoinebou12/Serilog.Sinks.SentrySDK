@@ -1,34 +1,78 @@
-﻿using Microsoft.AspNetCore.Http;
-
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Moq;
-
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using Serilog.Sinks.SentrySDK.AspNetCore;
-
 using Xunit;
 
-namespace Serilog.Tests
+namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 {
-    public class SentrySinkContextMiddlewareExtensionsTests
+    public class SentrySinkContextMiddlewareTests
     {
-        private readonly Mock<IApplicationBuilder> _appMock;
-
-        public SentrySinkContextMiddlewareExtensionsTests()
+        public class DelegatingSink : ILogEventSink
         {
-            _appMock = new Mock<IApplicationBuilder>();
+            private readonly Action<LogEvent> _write;
+
+            public DelegatingSink(Action<LogEvent> write)
+            {
+                _write = write;
+            }
+
+            public void Emit(LogEvent logEvent)
+            {
+                _write(logEvent);
+            }
+        }
+
+        private readonly Mock<RequestDelegate> _nextMock;
+        private readonly Mock<HttpContext> _contextMock;
+
+        public SentrySinkContextMiddlewareTests()
+        {
+            _nextMock = new Mock<RequestDelegate>();
+            _contextMock = new Mock<HttpContext>();
         }
 
         [Fact]
-        public void AddSentryContext_ShouldUseMiddleware()
+        public async Task Invoke_CallsNextDelegate()
         {
-            _appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>())).Returns(_appMock.Object);
-            _appMock.Setup(app => app.UseMiddleware<SentrySinkContextMiddleware>()).Returns(_appMock.Object);
+            var middleware = new SentrySinkContextMiddleware(_nextMock.Object);
 
-            var app = _appMock.Object.AddSentryContext();
+            await middleware.Invoke(_contextMock.Object);
 
-            _appMock.Verify(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()), Times.Once);
-            _appMock.Verify(app => app.UseMiddleware<SentrySinkContextMiddleware>(), Times.Once);
+            _nextMock.Verify(next => next(_contextMock.Object), Times.Once);
+        }
 
-            Assert.Equal(_appMock.Object, app);
+        [Fact]
+        public async Task Invoke_LogsException_WhenNextDelegateThrows()
+        {
+            var middleware = new SentrySinkContextMiddleware(_nextMock.Object);
+
+            _nextMock.Setup(next => next(_contextMock.Object)).ThrowsAsync(new Exception("Test exception"));
+
+            // Arrange
+            var logEvents = new List<LogEvent>();
+            var logger = new LoggerConfiguration()
+                .WriteTo.Sink(new DelegatingSink(le => logEvents.Add(le)))
+                .CreateLogger();
+            Log.Logger = logger;
+
+            // Act
+            try
+            {
+                await middleware.Invoke(_contextMock.Object);
+            }
+            catch
+            {
+                // We expect an exception, so do nothing here.
+            }
+
+            // Assert
+            Assert.Single(logEvents);
+            Assert.Contains(logEvents, le => le.Exception.Message == "Test exception");
         }
     }
 }

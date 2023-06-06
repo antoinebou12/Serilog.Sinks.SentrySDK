@@ -1,48 +1,27 @@
-﻿using System;
-using Serilog;
-using Serilog.Configuration;
-using Serilog.Events;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
-    public static class SerilogSentryExtensions
+    /// <summary>
+    /// Contains extensions methods for an application.
+    /// </summary>
+    public static class SentrySinkContextMiddlewareExtensions
     {
-        public static LoggerConfiguration Sentry(
-            this LoggerSinkConfiguration loggerConfiguration,
-            string dsn,
-            bool active,
-            bool includeActivityData,
-            bool sendDefaultPii,
-            int maxBreadcrumbs,
-            int maxQueueItems,
-            bool debug,
-            string diagnosticLevel,
-            string environment,
-            string serviceName,
-            string release,
-            LogEventLevel minimumLevel = LogEventLevel.Error)
+        /// <summary>
+        /// Adds Sentry context middleware to the app.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        /// <returns>The application.</returns>
+        public static IApplicationBuilder AddSentryContext(this IApplicationBuilder app)
         {
-            if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
-            if (dsn == null) throw new ArgumentNullException(nameof(dsn));
-
-            var options = new SentryOptions
+            app.Use(next => context =>
             {
-                Dsn = dsn,
-                IsActive = active,
-                IncludeActivityData = includeActivityData,
-                SendDefaultPii = sendDefaultPii,
-                MaxBreadcrumbs = maxBreadcrumbs,
-                MaxQueueItems = maxQueueItems,
-                Debug = debug,
-                DiagnosticLevel = diagnosticLevel,
-                Environment = environment,
-                ServiceName = serviceName,
-                Release = release
-            };
+                context.Request.EnableBuffering();
+                return next(context);
+            });
 
-            return loggerConfiguration.Sink(
-                new SentrySink(options, formatProvider: null),
-                restrictedToMinimumLevel: minimumLevel);
+            return app.UseMiddleware<SentrySinkContextMiddleware>();
         }
     }
 }
