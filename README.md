@@ -4,8 +4,9 @@ A Serilog sink for Sentry that simplifies error and log management in your appli
 
 ## Project Status
 
-[![Build status](https://ci.appveyor.com/api/projects/status/3rtn2dsk5ln6qaup?svg=true)](https://ci.appveyor.com/project/olsh/serilog-Sink-sentry)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=serilog-Sink-sentry&metric=alert_status)](https://sonarcloud.io/dashboard?id=serilog-Sink-sentry)
+[![.NET Core Test](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/tests.yml/badge.svg)](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/tests.yml)
+[![.NET Core CI](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/CI.yml/badge.svg)](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/CI.yml)
+[![CodeQL](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/codeql.yml/badge.svg)](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/codeql.yml)
 
 ## Available Packages
 
@@ -20,7 +21,10 @@ The library is available as a [Nuget package](https://www.nuget.org/packages/Ser
 
 You can install it with the following command:
 ```
+dotnet add package Serilog.Sinks.SentrySDK
 Install-Package Serilog.Sinks.SentrySDK
+dotnet add package Serilog.Sinks.SentrySDK.AspNetCore
+Install-Package Serilog.Sinks.SentrySDK.AspNetCore
 ```
 
 ## Demos
