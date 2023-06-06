@@ -59,9 +59,12 @@ jobs:
     - name: Restore dependencies - Serilog.Sinks.SentrySDK.AspNetCore
       run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
     - name: Pack Serilog.Sinks.SentrySDK
-      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output nupkgs
+      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output nupkgs
+      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output ./nupkgs
+    - name: Check nupkgs directory
+      run: |
+        ls ./nupkgs
 
   push:
     needs: package
@@ -73,6 +76,6 @@ jobs:
       with:
         dotnet-version: 6.0.100
     - name: Push Serilog.Sinks.SentrySDK to NuGet
-      run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
     - name: Push Serilog.Sinks.SentrySDK.AspNetCore to NuGet
-      run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
