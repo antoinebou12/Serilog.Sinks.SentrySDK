@@ -18,7 +18,10 @@ jobs:
         dotnet-version: 6.0.100
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore /src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+
+    - name: Install dependencies
+      run: dotnet restore ./src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
