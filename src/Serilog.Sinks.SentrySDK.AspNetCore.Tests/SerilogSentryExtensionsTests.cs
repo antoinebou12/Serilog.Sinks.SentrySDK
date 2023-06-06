@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder; // Add this line
+﻿using System;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+
 using Moq;
+
 using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests

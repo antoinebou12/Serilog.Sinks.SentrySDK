@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Principal;
+using Microsoft.Extensions.Primitives;
+
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -39,9 +41,9 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         [Fact]
         public void RequestCookies_ReturnsCorrectCookies()
         {
-            var cookies = new RequestCookieCollection(new Dictionary<string, string> { { "cookie1", "value1" }, { "cookie2", "value2" } });
+            var cookies = new Dictionary<string, string> { { "cookie1", "value1" }, { "cookie2", "value2" } };
 
-            _httpContext.Request.Cookies = cookies;
+            _httpContext.Request.Headers["Cookie"] = new StringValues(cookies.Select(c => $"{c.Key}={c.Value}").ToArray());
 
             var resultCookies = _aspCoreHttpContextAdapter.RequestCookies;
 
@@ -49,17 +51,19 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
             Assert.True(cookies.All(c => resultCookies.ContainsKey(c.Key) && resultCookies[c.Key] == c.Value));
         }
 
+
         [Fact]
         public void RequestHeaders_ReturnsCorrectHeaders()
         {
-            _httpContext.Request.Headers.Add("header1", "value1");
-            _httpContext.Request.Headers.Add("header2", "value2 value3");
+            _httpContext.Request.Headers.Add("header1", new StringValues("value1"));
+            _httpContext.Request.Headers.Add("header2", new StringValues("value2 value3"));
 
             var resultHeaders = _aspCoreHttpContextAdapter.RequestHeaders;
 
             Assert.Equal(_httpContext.Request.Headers.Count, resultHeaders.Count);
             Assert.True(_httpContext.Request.Headers.All(h => resultHeaders.ContainsKey(h.Key) && resultHeaders[h.Key] == h.Value));
         }
+
 
         [Fact]
         public void RequestMethod_ReturnsCorrectMethod()

@@ -14,6 +14,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Sinks.SentrySDK.AspNetCore", "Serilog.Sinks.SentrySDK.AspNetCore\Serilog.Sinks.SentrySDK.AspNetCore.csproj", "{9D939D70-B3A3-4D47-BDB7-DC661B5ACD9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.Sentry.AspNetCore", "Serilog.Sinks.SentrySDK.AspNetCore\Serilog.Sinks.SentrySDK.AspNetCore.csproj", "{72C0A9B6-7144-49B5-B46A-4A3B84D0574F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.SentrySDK.AspNetCore.Tests", "Serilog.Sinks.SentrySDK.AspNetCore.Tests\Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj", "{A05E4636-0668-4141-BB5C-4899415525B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.SentrySDK.Tests", "Serilog.Sinks.SentrySDK.Tests\Serilog.Sinks.SentrySDK.Tests.csproj", "{23D83A6E-FEF5-4E86-A60B-EEF730D981C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +34,18 @@ Global
 		{9D939D70-B3A3-4D47-BDB7-DC661B5ACD9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D939D70-B3A3-4D47-BDB7-DC661B5ACD9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D939D70-B3A3-4D47-BDB7-DC661B5ACD9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C0A9B6-7144-49B5-B46A-4A3B84D0574F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C0A9B6-7144-49B5-B46A-4A3B84D0574F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C0A9B6-7144-49B5-B46A-4A3B84D0574F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C0A9B6-7144-49B5-B46A-4A3B84D0574F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A05E4636-0668-4141-BB5C-4899415525B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A05E4636-0668-4141-BB5C-4899415525B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A05E4636-0668-4141-BB5C-4899415525B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A05E4636-0668-4141-BB5C-4899415525B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23D83A6E-FEF5-4E86-A60B-EEF730D981C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23D83A6E-FEF5-4E86-A60B-EEF730D981C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23D83A6E-FEF5-4E86-A60B-EEF730D981C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23D83A6E-FEF5-4E86-A60B-EEF730D981C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -22,7 +22,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
             return exception.Data.Contains(CapturedKey);
         }
 
-        internal static void SetCaptured(this Exception exception)
+        public static void SetCaptured(this Exception exception)
         {
             if (exception == null)
             {

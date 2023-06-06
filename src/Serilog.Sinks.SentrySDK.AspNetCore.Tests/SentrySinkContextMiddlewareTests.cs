@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
+
 using Moq;
+
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.SentrySDK.AspNetCore;
+
 using Xunit;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests

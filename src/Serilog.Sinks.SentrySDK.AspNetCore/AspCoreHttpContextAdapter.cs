@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
-
 using Microsoft.AspNetCore.Http;
-
 using Serilog.Sinks.SentrySDK;
-
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
     public class AspCoreHttpContextAdapter : ISentryHttpContext
