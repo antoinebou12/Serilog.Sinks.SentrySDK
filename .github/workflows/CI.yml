@@ -16,28 +16,34 @@ jobs:
       with:
         dotnet-version: 6.0.100
 
-    - name: Install dependencies
-      run: dotnet restore /src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+    - name: Install dependencies - Serilog.Sinks.SentrySDK
+      run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
 
-    - name: Install dependencies
-      run: dotnet restore ./src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
+    - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
+      run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
 
     - name: Build
       run: dotnet build --configuration Release
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
+      run: dotnet test --no-restore --verbosity normal --project src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
+
+    - name: Test - Serilog.Sinks.SentrySDK.Tests
+      run: dotnet test --no-restore --verbosity normal --project src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
     - name: Pack Serilog.Sinks.SentrySDK
-      run: dotnet pack --no-build --configuration Release --output nupkgs/Serilog.Sinks.SentrySDK
+      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --no-build --configuration Release --output nupkgs
 
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet pack --no-build --configuration Release --output nupkgs/Serilog.Sinks.SentrySDK.AspNetCore
+      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --no-build --configuration Release --output nupkgs
 
-    - name: Push
+    - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.100
-    - run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
 
-    - run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.AspNetCore/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+    - name: Push Serilog.Sinks.SentrySDK to NuGet
+      run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+    - name: Push Serilog.Sinks.SentrySDK.AspNetCore to NuGet
+      run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
