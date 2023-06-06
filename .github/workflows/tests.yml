@@ -23,5 +23,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+    - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
+      run: dotnet test --no-restore --verbosity normal --project ./src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
+
+    - name: Test - Serilog.Sinks.SentrySDK.Tests
+      run: dotnet test --no-restore --verbosity normal --project ./src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
