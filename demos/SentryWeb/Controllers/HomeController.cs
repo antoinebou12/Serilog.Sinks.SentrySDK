@@ -21,7 +21,8 @@ namespace SentryWeb.Controllers
             ViewData["Message"] = "Your application description page.";
 
             // Explicitly call our error logger
-            Log.Error("Intentional error logged at {TimeStamp}", DateTime.Now.ToLongTimeString());
+            var errorLog = "Intentional error logged at " + DateTime.Now.ToLongTimeString();
+            Log.Error(errorLog);
 
             return View();
         }

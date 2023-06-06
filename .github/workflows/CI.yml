@@ -54,10 +54,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.100
-    - name: Restore dependencies - Serilog.Sinks.SentrySDK
-      run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
-    - name: Restore dependencies - Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
     - name: Pack Serilog.Sinks.SentrySDK
       run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore

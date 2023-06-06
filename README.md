@@ -10,16 +10,17 @@ A Serilog sink for Sentry that simplifies error and log management in your appli
 
 ## Available Packages
 
-|   | Package | Nuget |
-| ------------- | ------------- | ------------- |
-| Serilog.Sinks.SentrySDK  | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)  |
-| Serilog.Sinks.SentrySDK.AspNetCore  | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/)  |
+|                                    | Package                                                                            | Nuget                                                                                                                                                 |
+| ---------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Serilog.Sinks.SentrySDK            | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)            | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)                       |
+| Serilog.Sinks.SentrySDK.AspNetCore | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) |
 
 ## Installation
 
 The library is available as a [Nuget package](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/).
 
 You can install it with the following command:
+
 ```
 dotnet add package Serilog.Sinks.SentrySDK
 Install-Package Serilog.Sinks.SentrySDK
@@ -37,7 +38,6 @@ Demos demonstrating how to use this library can be found [here](demos/).
 
 Add the Sentry sink to your Serilog logger configuration, so that the logs will be sent to your Sentry instance. The Sentry DSN must be provided.
 
-
 You can also configure Serilog using a JSON configuration. Here's a sample:
 
 ```json
@@ -49,13 +49,15 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
     }
   },
   "Serilog": {
-      "Using":  ["Serilog.Sinks.Console", "Serilog.Sinks.File", "Serilog.Sinks.SentrySDK"],
-      "MinimumLevel": "Debug",
-      "WriteTo": [
-        { "Name": "Console" },
-        { "Name": "File", "Args": { "path": "Logs/log.txt" } },
-        { "Name": "Sentry", "Args": {
-          "dsn": "<YourSentryDsn>",
+    "Using": [
+      "Serilog.Sinks.SentrySDK"
+    ],
+    "MinimumLevel": "Debug",
+    "WriteTo": [
+      {
+        "Name": "Sentry",
+        "Args": {
+          "dsn": "https://631a43bcab0c49d8ae79a45431e0fece@o4504996239179776.ingest.sentry.io/4505284897996800",
           "active": true,
           "includeActivityData": true,
           "sendDefaultPii": true,
@@ -64,17 +66,26 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
           "debug": true,
           "diagnosticLevel": "Error",
           "environment": "Development",
-          "serviceName": "Sample",
-          "release": "<ReleaseName>"
-        } }
-      ],
-      "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId" ],
-      "Properties": {
-          "Application": "Sample"
+          "serverName": "Sample",
+          "release": "",
+          "dist": "",
+          "tracesSampleRate": 1.0,
+          "tracesSampler": "AlwaysSample",
+          "stackTraceMode": "Enhanced",
+          "isGlobalModeEnabled": true,
+          "sampleRate": 1.0,
+          "attachStacktrace": true,
+          "autoSessionTracking": true,
+          "enableTracing": true
+        }
       }
+    ],
+    "Enrich": ["FromLogContext", "WithMachineName", "WithThreadId"],
+    "Properties": {
+      "Application": "Sample"
+    }
   }
 }
-
 ```
 
 ```csharp
@@ -107,7 +118,7 @@ var log = new LoggerConfiguration()
 
 ### Capturing HttpContext (ASP.NET Core)
 
-To include user, request body, and header information in the logs, some additional setup is required. 
+To include user, request body, and header information in the logs, some additional setup is required.
 
 First, install the [ASP.NET Core sink](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) with the command:
 

@@ -2,63 +2,77 @@ name: .NET Core Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   restore:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.100
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.100
 
-    - name: Install dependencies - Serilog.Sinks.SentrySDK
-      run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+      - name: Install dependencies - Serilog.Sinks.SentrySDK
+        run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
 
-    - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
+      - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
+        run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
 
   build:
     needs: restore
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.100
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.100
 
-    - name: Build - Serilog.Sinks.SentrySDK
-      run: |
-        dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
-        dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release
+      - name: Build - Serilog.Sinks.SentrySDK
+        run: |
+          dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+          dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release
 
-    - name: Build - Serilog.Sinks.SentrySDK.AspNetCore
-      run: |
-        dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
-        dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release
-
-
+      - name: Build - Serilog.Sinks.SentrySDK.AspNetCore
+        run: |
+          dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
+          dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.100
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.100
 
-    - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
-      run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
+      - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
+        run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
 
+      - name: Test - Serilog.Sinks.SentrySDK.Tests
+        run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
-    - name: Test - Serilog.Sinks.SentrySDK.Tests
-      run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
+  coverage:
+      needs: test
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
 
+        - name: Download reports
+          uses: actions/download-artifact@v3
+          with:
+            name: code-coverage
+
+        - name: Codecov
+          uses: codecov/codecov-action@v2
+          with:
+            files: "./reports/coverage.cobertura.xml"
+            fail_ci_if_error: true

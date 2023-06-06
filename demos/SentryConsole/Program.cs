@@ -5,7 +5,8 @@ using Microsoft.Extensions.Configuration;
 
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.SentrySDK.AspNetCore;
+using Serilog.Sinks.SentrySDK;
+using Serilog.Exceptions;
 
 namespace SentryConsole
 {
@@ -19,13 +20,28 @@ namespace SentryConsole
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
+                .Enrich.WithExceptionDetails()
+                .Enrich.FromLogContext()
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
             try
             {
                 // Explicitly call our error logger
-                Log.Error("Intentional error logged at {TimeStamp}", DateTime.Now.ToLongTimeString());
+                var errorLog = "Intentional error logged at " + DateTime.Now.ToLongTimeString();
+                Log.Error(errorLog);
+
+                var warningLog = "Intentional warning logged at " + DateTime.Now.ToLongTimeString();
+                Log.Warning(errorLog);
+
+                var infoLog = "Intentional info logged at " + DateTime.Now.ToLongTimeString();
+                Log.Information(errorLog);
+
+                var debugLog = "Intentional debug logged at " + DateTime.Now.ToLongTimeString();
+                Log.Debug(errorLog);
+
+                var traceLog = "Intentional trace logged at " + DateTime.Now.ToLongTimeString();
+                Log.Verbose(errorLog);
 
                 // Trigger an exception
                 ConvertToIntSecondTier();

@@ -54,7 +54,6 @@ namespace SentryWeb
 
             app.UseStaticFiles();
             app.UseRouting();
-            app.AddSentryContext();
 
             app.UseEndpoints(endpoints =>
             {
@@ -64,7 +63,7 @@ namespace SentryWeb
             });
 
             // Example usage of logging an error
-            // Log.Error("A fake error occurred 1");
+            Log.Error("A fake error occurred 1");
         }
     }
 }
