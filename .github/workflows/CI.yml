@@ -2,42 +2,34 @@ name: .NET Core CI
 
 on:
   release:
-    types: [ created ]
-    
+    types: [ published ]
   workflow_dispatch:
     inputs:
       version:
         description: 'Version to build'
         required: true
         default: '1.0.1'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.100
-
     - name: Install dependencies - Serilog.Sinks.SentrySDK
       run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
-
     - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
       run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
-
     - name: Build - Serilog.Sinks.SentrySDK
       run: |
-        dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
         dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release
-
     - name: Build - Serilog.Sinks.SentrySDK.AspNetCore
       run: |
-        dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
         dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release
-
 
   test:
     needs: build
@@ -48,10 +40,8 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.100
-
     - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
       run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
-
     - name: Test - Serilog.Sinks.SentrySDK.Tests
       run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
@@ -64,15 +54,25 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.100
-
+    - name: Restore dependencies - Serilog.Sinks.SentrySDK
+      run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+    - name: Restore dependencies - Serilog.Sinks.SentrySDK.AspNetCore
+      run: dotnet restore src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj
     - name: Pack Serilog.Sinks.SentrySDK
       run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --no-build --configuration Release --output nupkgs
-
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
       run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --no-build --configuration Release --output nupkgs
 
+  push:
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.100
     - name: Push Serilog.Sinks.SentrySDK to NuGet
       run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
-
     - name: Push Serilog.Sinks.SentrySDK.AspNetCore to NuGet
       run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
