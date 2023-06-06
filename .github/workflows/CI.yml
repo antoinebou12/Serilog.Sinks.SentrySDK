@@ -1,0 +1,37 @@
+name: .NET Core CI
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Pack Serilog.Sinks.SentrySDK
+      run: dotnet pack --no-build --configuration Release --output nupkgs/Serilog.Sinks.SentrySDK
+
+    - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
+      run: dotnet pack --no-build --configuration Release --output nupkgs/Serilog.Sinks.SentrySDK.AspNetCore
+
+    - name: Push
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0
+    - run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+    - run: dotnet nuget push nupkgs/Serilog.Sinks.SentrySDK.AspNetCore/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
