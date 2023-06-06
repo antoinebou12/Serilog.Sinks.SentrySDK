@@ -13,7 +13,6 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         public void CheckIfCaptured_ThrowsArgumentNullException_WhenExceptionIsNull()
         {
             Exception exception = null;
-
             Assert.Throws<ArgumentNullException>(() => exception.CheckIfCaptured());
         }
 
@@ -21,7 +20,6 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         public void CheckIfCaptured_ReturnsFalse_WhenExceptionNotCaptured()
         {
             var exception = new Exception();
-
             Assert.False(exception.CheckIfCaptured());
         }
 

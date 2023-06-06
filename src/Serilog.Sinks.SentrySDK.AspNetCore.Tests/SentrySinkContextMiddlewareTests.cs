@@ -72,7 +72,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
             }
             catch
             {
-                // We expect an exception, so do nothing here.
+                // ignored
             }
 
             // Assert

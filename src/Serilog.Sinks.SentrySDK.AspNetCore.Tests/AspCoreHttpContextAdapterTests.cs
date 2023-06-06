@@ -33,9 +33,10 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         [Fact]
         public void RemoteIpAddress_ReturnsCorrectIpAddress()
         {
-            _httpContext.Connection.RemoteIpAddress = IPAddress.Parse("127.0.0.1");
+            var expected = "127.0.0.1";
 
-            Assert.Equal("127.0.0.1", _aspCoreHttpContextAdapter.RemoteIpAddress);
+            _httpContext.Connection.RemoteIpAddress = IPAddress.Parse(expected);
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RemoteIpAddress);
         }
 
         [Fact]
@@ -50,7 +51,6 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
             Assert.Equal(cookies.Count, resultCookies.Count);
             Assert.True(cookies.All(c => resultCookies.ContainsKey(c.Key) && resultCookies[c.Key] == c.Value));
         }
-
 
         [Fact]
         public void RequestHeaders_ReturnsCorrectHeaders()

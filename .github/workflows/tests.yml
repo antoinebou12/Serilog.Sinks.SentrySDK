@@ -60,7 +60,7 @@ jobs:
         run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./reports/ src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
       - name: Upload coverage to GitHub Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage
           path: ./reports/
@@ -76,6 +76,7 @@ jobs:
           uses: actions/download-artifact@v3
           with:
             name: code-coverage
+            path: ./reports/
 
         - name: Codecov
           uses: codecov/codecov-action@v2
