@@ -77,7 +77,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 enableTracing: true,
                 transactionService: _transactionServiceMock.Object,
                 tracesSampleRate: (float) sentryOptions.TracesSampleRate,
-                stackTraceMode: sentryOptions.StackTraceMode
+                stackTraceMode: "Enhanced"
             );
 
         }

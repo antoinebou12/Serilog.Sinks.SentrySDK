@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+
 using Microsoft.AspNetCore.Http;
+
 using Serilog.Sinks.SentrySDK;
+
+using System.Threading.Tasks;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
@@ -61,6 +65,26 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
         public IPrincipal User => _httpContext.User as IPrincipal;
 
         /// <summary>
+        /// Gets the request protocol.
+        /// </summary>
+        public string RequestProtocol => _httpContext.Request.Protocol;
+
+        /// <summary>
+        /// Gets the request scheme.
+        /// </summary>
+        public string RequestScheme => _httpContext.Request.Scheme;
+
+        /// <summary>
+        /// Gets the request user agent.
+        /// </summary>
+        public string RequestUserAgent => _httpContext.Request.Headers["User-Agent"].ToString();
+
+        /// <summary>
+        /// Gets the response headers.
+        /// </summary>
+        public int ResponseStatusCode => _httpContext.Response.StatusCode;
+
+        /// <summary>
         /// Gets the request body.
         /// </summary>
         /// <returns>The request body as a string, or null if the body cannot be read.</returns>
@@ -72,6 +96,25 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
                 using (var reader = new StreamReader(_httpContext.Request.Body))
                 {
                     var body = reader.ReadToEnd();
+                    return body;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the request body.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> GetRequestBodyAsync()
+        {
+            if (_httpContext.Request.Body.CanSeek)
+            {
+                _httpContext.Request.Body.Position = 0;
+                using (var reader = new StreamReader(_httpContext.Request.Body))
+                {
+                    var body = await reader.ReadToEndAsync();
                     return body;
                 }
             }

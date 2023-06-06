@@ -57,7 +57,7 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
       {
         "Name": "Sentry",
         "Args": {
-          "dsn": "https://631a43bcab0c49d8ae79a45431e0fece@o4504996239179776.ingest.sentry.io/4505284897996800",
+          "dsn": "",
           "active": true,
           "includeActivityData": true,
           "sendDefaultPii": true,
@@ -66,9 +66,11 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
           "debug": true,
           "diagnosticLevel": "Error",
           "environment": "Development",
-          "serverName": "Sample",
-          "release": "",
-          "dist": "",
+          "operationName": "SentryConsole",
+          "release": "1.0.3",
+          "serverName": "SentryConsole",
+          "dist": "SentryConsole",
+          "tags": "SentryConsole=SentryConsole",
           "tracesSampleRate": 1.0,
           "tracesSampler": "AlwaysSample",
           "stackTraceMode": "Enhanced",
