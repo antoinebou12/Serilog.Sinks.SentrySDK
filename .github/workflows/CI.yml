@@ -86,6 +86,6 @@ jobs:
           name: nuget-packages
           path: ./nupkgs
       - name: Push Serilog.Sinks.SentrySDK to NuGet
-        run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Push Serilog.Sinks.SentrySDK.AspNetCore to NuGet
-        run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./nupkgs/Serilog.Sinks.SentrySDK.AspNetCore.*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
