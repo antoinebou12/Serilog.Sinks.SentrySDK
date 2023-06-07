@@ -54,6 +54,7 @@ namespace SentryWeb
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.AddSentryContext();
 
             app.UseEndpoints(endpoints =>
             {

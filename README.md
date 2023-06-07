@@ -155,3 +155,35 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 ```
 
 With these steps, your logs will include detailed information about the HTTP context of the requests.
+
+
+## Sentry SDK
+### Properties
+* `BackgroundWorker`: A property that gets or sets the worker used by the client to pass envelopes.
+* `SentryScopeStateProcessor`: A property to get or set the Scope state processor.
+* `SendDefaultPii`: A property to get or set whether to include default Personal Identifiable Information.
+* `NetworkStatusListener`: A property to get or set a mechanism to convey network status to the caching transport.
+* `ServerName`: A property to get or set the name of the server running the application.
+* `AttachStacktrace`: A property to get or set whether to send the stack trace of an event captured without an exception.
+* `IsEnvironmentUser`: A property to get or set whether to report the System.Environment.UserName as the User affected in the event.
+* `SampleRate`: A property to get or set the optional sample rate.
+* `ShutdownTimeout`: A property to get or set how long to wait for events to be sent before shutdown.
+* `MaxBreadcrumbs`: A property to get or set the maximum breadcrumbs.
+* `MaxQueueItems`: A property to get or set the maximum number of events to keep while the worker attempts to send them.
+* `BeforeBreadcrumb`: A property to get or set a callback function to be invoked when a breadcrumb is about to be stored.
+* `BeforeSendTransaction`: A property to get or set a callback to invoke before sending a transaction to Sentry.
+* `MaxCacheItems`: A property to get or set the maximum number of events to keep in cache.
+* `Dsn`: A property to get or set the Data Source Name of a given project in Sentry.
+* `Environment`: A property to get or set the environment the application is running.
+* `Distribution`: A property to get or set the distribution of the application, associated with the release set in `SentryOptions.Release`.
+* `Release`: A property to get or set the release information for the application.
+* `BeforeSend`: A property to get or set a callback to invoke before sending an event to Sentry.
+
+### Methods
+* `AddJsonConverter(JsonConverter converter)`: A method to add a `JsonConverter` to be used when serializing or deserializing objects to JSON with the SDK.
+* `SetBeforeBreadcrumb(Func<Breadcrumb, Breadcrumb?> beforeBreadcrumb)`: A method to set a callback function to be invoked when a breadcrumb is about to be stored.
+* `SetBeforeBreadcrumb(Func<Breadcrumb, Hint, Breadcrumb?> beforeBreadcrumb)`: Another overload of `SetBeforeBreadcrumb` method that accepts a `Hint`.
+* `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)`: A method to configure a callback function to be invoked before sending an event to Sentry.
+* `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)`: Another overload of `SetBeforeSend` method that accepts a `Hint`.
+* `SetBeforeSendTransaction(Func<Transaction, Transaction?> beforeSendTransaction)`: A method to configure a callback to invoke before sending a transaction to Sentry.
+* `SetBeforeSendTransaction(Func<Transaction, Hint, Transaction?> beforeSendTransaction)`: Another overload of `SetBeforeSendTransaction` method that accepts a `Hint`.
