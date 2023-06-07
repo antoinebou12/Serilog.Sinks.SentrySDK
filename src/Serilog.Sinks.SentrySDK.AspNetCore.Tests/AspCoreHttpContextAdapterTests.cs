@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 
 
@@ -42,14 +43,14 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         [Fact]
         public void RequestCookies_ReturnsCorrectCookies()
         {
-            var cookies = new Dictionary<string, string> { { "cookie1", "value1" }, { "cookie2", "value2" } };
+            var expectedCookies = new Dictionary<string, string> { { "cookie1", "value1" }, { "cookie2", "value2" } };
 
-            _httpContext.Request.Headers["Cookie"] = new StringValues(cookies.Select(c => $"{c.Key}={c.Value}").ToArray());
+            _httpContext.Request.Headers["Cookie"] = new StringValues(expectedCookies.Select(c => $"{c.Key}={c.Value}").ToArray());
 
             var resultCookies = _aspCoreHttpContextAdapter.RequestCookies;
 
-            Assert.Equal(cookies.Count, resultCookies.Count);
-            Assert.True(cookies.All(c => resultCookies.ContainsKey(c.Key) && resultCookies[c.Key] == c.Value));
+            Assert.Equal(expectedCookies.Count, resultCookies.Count);
+            Assert.True(expectedCookies.All(c => resultCookies.ContainsKey(c.Key) && resultCookies[c.Key] == c.Value));
         }
 
         [Fact]
@@ -64,29 +65,31 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
             Assert.True(_httpContext.Request.Headers.All(h => resultHeaders.ContainsKey(h.Key) && resultHeaders[h.Key] == h.Value));
         }
 
-
         [Fact]
         public void RequestMethod_ReturnsCorrectMethod()
         {
-            _httpContext.Request.Method = "GET";
+            var expected = "GET";
+            _httpContext.Request.Method = expected;
 
-            Assert.Equal("GET", _aspCoreHttpContextAdapter.RequestMethod);
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestMethod);
         }
 
         [Fact]
         public void RequestPath_ReturnsCorrectPath()
         {
-            _httpContext.Request.Path = "/path1";
+            var expected = "/path1";
+            _httpContext.Request.Path = expected;
 
-            Assert.Equal("/path1", _aspCoreHttpContextAdapter.RequestPath);
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestPath);
         }
 
         [Fact]
         public void RequestQueryString_ReturnsCorrectQueryString()
         {
-            _httpContext.Request.QueryString = new QueryString("?param1=value1&param2=value2");
+            var expected = "?param1=value1&param2=value2";
+            _httpContext.Request.QueryString = new QueryString(expected);
 
-            Assert.Equal("?param1=value1&param2=value2", _aspCoreHttpContextAdapter.RequestQueryString);
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestQueryString);
         }
 
         [Fact]
@@ -94,25 +97,26 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         {
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, "Test User") };
             var identity = new ClaimsIdentity(claims, "Test Auth Type");
-            _httpContext.User = new ClaimsPrincipal(identity);
+            var expectedUser = new ClaimsPrincipal(identity);
+            _httpContext.User = expectedUser;
 
-            Assert.Equal(_httpContext.User as IPrincipal, _aspCoreHttpContextAdapter.User);
+            Assert.Equal(expectedUser as IPrincipal, _aspCoreHttpContextAdapter.User);
         }
 
         [Fact]
         public void GetRequestBody_ReturnsCorrectRequestBody_WhenBodyCanSeek()
         {
-            var bodyString = "This is a request body.";
+            var expectedBody = "This is a request body.";
             var memoryStream = new MemoryStream();
             var writer = new StreamWriter(memoryStream);
-            writer.Write(bodyString);
+            writer.Write(expectedBody);
             writer.Flush();
             memoryStream.Position = 0;
             _httpContext.Request.Body = memoryStream;
 
             var resultBody = _aspCoreHttpContextAdapter.GetRequestBody();
 
-            Assert.Equal(bodyString, resultBody);
+            Assert.Equal(expectedBody, resultBody);
         }
 
         [Fact]
@@ -126,5 +130,70 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
 
             Assert.Null(resultBody);
         }
+
+        [Fact]
+        public void RequestProtocol_ReturnsCorrectProtocol()
+        {
+            var expected = "HTTP/1.1";
+            _httpContext.Request.Protocol = expected;
+
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestProtocol);
+        }
+
+        [Fact]
+        public void RequestScheme_ReturnsCorrectScheme()
+        {
+            var expected = "https";
+            _httpContext.Request.Scheme = expected;
+
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestScheme);
+        }
+
+        [Fact]
+        public void RequestUserAgent_ReturnsCorrectUserAgent()
+        {
+            var expected = "TestAgent";
+            _httpContext.Request.Headers.Add("User-Agent", new StringValues(expected));
+
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestUserAgent);
+        }
+
+        [Fact]
+        public void ResponseStatusCode_ReturnsCorrectStatusCode()
+        {
+            var expected = 200;
+            _httpContext.Response.StatusCode = expected;
+
+            Assert.Equal(expected, _aspCoreHttpContextAdapter.ResponseStatusCode);
+        }
+
+        [Fact]
+        public async Task GetRequestBodyAsync_ReturnsCorrectRequestBody_WhenBodyCanSeek()
+        {
+            var expectedBody = "This is a request body.";
+            var memoryStream = new MemoryStream();
+            var writer = new StreamWriter(memoryStream);
+            await writer.WriteAsync(expectedBody);
+            await writer.FlushAsync();
+            memoryStream.Position = 0;
+            _httpContext.Request.Body = memoryStream;
+
+            var resultBody = await _aspCoreHttpContextAdapter.GetRequestBodyAsync();
+
+            Assert.Equal(expectedBody, resultBody);
+        }
+
+        [Fact]
+        public async Task GetRequestBodyAsync_ReturnsNull_WhenBodyCannotSeek()
+        {
+            var mockStream = new Mock<Stream>();
+            mockStream.Setup(m => m.CanSeek).Returns(false);
+            _httpContext.Request.Body = mockStream.Object;
+
+            var resultBody = await _aspCoreHttpContextAdapter.GetRequestBodyAsync();
+
+            Assert.Null(resultBody);
+        }
+
     }
 }

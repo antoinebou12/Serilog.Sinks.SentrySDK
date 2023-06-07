@@ -131,5 +131,18 @@ namespace Serilog.Sinks.SentrySDK.Tests
             // Assert
             _sentrySdkWrapperMock.Verify(sdk => sdk.CaptureException(expectedException), Times.Once);
         }
+
+        [Fact]
+        public void Emit_ShouldNotThrowException_WhenLogEventIsNull()
+        {
+            // Arrange
+            LogEvent nullLogEvent = null;
+
+            // Act
+            var ex = Record.Exception(() => _sentrySink.Emit(nullLogEvent));
+
+            // Assert
+            Assert.Null(ex);
+        }
     }
 }

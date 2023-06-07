@@ -138,13 +138,23 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="transactionService"></param>
         /// <param name="tracesSampleRate"></param>
         /// <param name="stackTraceMode"></param>
+        /// <param name="sentryScopeStateProcessor"></param>
+        /// <param name="isEnvironmentUser"></param>
+        /// <param name="shutdownTimeout"></param>
+        /// <param name="maxCacheItems"></param>
+        /// <param name="distribution"></param>
         public SentrySink(IFormatProvider formatProvider, ISentrySdkWrapper sentrySdkWrapper, string dsn, string tags,
         bool includeActivityData, bool sendDefaultPii, int maxBreadcrumbs,
         int maxQueueItems, bool debug, string diagnosticLevel, string environment,
         string serverName, string release, LogEventLevel restrictedToMinimumLevel,
         string transactionName, string operationName, float sampleRate,
         bool attachStacktrace, bool autoSessionTracking, bool enableTracing,
-        ITransactionService transactionService, double tracesSampleRate, string stackTraceMode)
+        ITransactionService transactionService, double tracesSampleRate, string stackTraceMode,
+        ISentryScopeStateProcessor sentryScopeStateProcessor = null,
+        bool isEnvironmentUser = false,
+        double shutdownTimeout = 2.0,
+        int maxCacheItems = 30,
+        string distribution = null)
         {
             _formatProvider = formatProvider;
             _sentrySdkWrapper = sentrySdkWrapper;
@@ -200,9 +210,13 @@ namespace Serilog.Sinks.SentrySDK
                 EnableTracing = enableTracing,
                 ServerName = serverName ?? Environment.MachineName,
                 TracesSampleRate = tracesSampleRate,
-                StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true)
+                StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
+                SentryScopeStateProcessor = sentryScopeStateProcessor,
+                IsEnvironmentUser = isEnvironmentUser,
+                ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
+                MaxCacheItems = maxCacheItems,
+                Distribution = distribution,
             };
-
             _options.SetBeforeSend((sentryEvent, hint) =>
             {
                 if (sentryEvent.Exception != null && sentryEvent.Exception.Data.Contains("EventId"))

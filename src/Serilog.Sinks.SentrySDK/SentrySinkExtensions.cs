@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Diagnostics;
+using System;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
@@ -43,7 +44,11 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="transactionService">The service used for handling transactions.</param>
         /// <param name="tracesSampleRate"> The sample rate for traces.</param>
         /// <param name="stackTraceMode"></param>
-        /// 
+        /// <param name="sentryScopeStateProcessor"> The processor for the scope state.</param>
+        /// <param name="isEnvironmentUser"> Whether to use the environment as the user or not.</param>
+        /// <param name="shutdownTimeout"> The timeout for the shutdown.</param>
+        /// <param name="maxCacheItems"> The maximum number of items to cache.</param>
+        /// <param name="distribution"> The distribution of your application.</param>
         /// <returns>Logger configuration, allowing configuration to continue.</returns>
         public static LoggerConfiguration Sentry(
             this LoggerSinkConfiguration loggerConfiguration,
@@ -56,7 +61,7 @@ namespace Serilog.Sinks.SentrySDK
             bool debug = true,
             string diagnosticLevel = "Error",
             string environment = null,
-            string serverName = "Sample",
+            string serverName = null,
             string release = null,
             LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error,
             IFormatProvider formatProvider = null,
@@ -69,7 +74,12 @@ namespace Serilog.Sinks.SentrySDK
             bool enableTracing = true,
             ITransactionService transactionService = null,
             double tracesSampleRate = 1.0,
-            string stackTraceMode = "Enhanced"
+            string stackTraceMode = "Enhanced",
+            ISentryScopeStateProcessor sentryScopeStateProcessor = null,
+            bool isEnvironmentUser = false,
+            double shutdownTimeout = 2.0,
+            int maxCacheItems = 30,
+            string distribution = null
             )
         {
             var options = new SentryOptions
@@ -87,7 +97,9 @@ namespace Serilog.Sinks.SentrySDK
                 AutoSessionTracking = autoSessionTracking,
                 EnableTracing = enableTracing,
                 TracesSampleRate = (float) tracesSampleRate,
-                StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true)
+                StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
+                ServerName = serverName,
+
             };
 
             var sink = new SentrySink(
