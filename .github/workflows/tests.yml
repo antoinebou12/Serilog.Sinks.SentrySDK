@@ -93,11 +93,11 @@ jobs:
         - name: Codecov SentrySDK.AspNetCore.Tests
           uses: codecov/codecov-action@v2
           with:
-            files: "src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reportscoverage.cobertura.xml"
+            files: "src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports/coverage.cobertura.xml"
             fail_ci_if_error: true
 
         - name: Codecov SentrySDK.Tests
           uses: codecov/codecov-action@v2
           with:
-            files: "src/Serilog.Sinks.SentrySDK.Tests/reportscoverage.cobertura.xml"
+            files: "src/Serilog.Sinks.SentrySDK.Tests/reports/coverage.cobertura.xml"
             fail_ci_if_error: true
