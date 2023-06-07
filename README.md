@@ -25,8 +25,6 @@ You can install it with the following command:
 ```
 dotnet add package Serilog.Sinks.SentrySDK
 Install-Package Serilog.Sinks.SentrySDK
-dotnet add package Serilog.Sinks.SentrySDK.AspNetCore
-Install-Package Serilog.Sinks.SentrySDK.AspNetCore
 ```
 
 ## Demos
@@ -126,6 +124,7 @@ To include user, request body, and header information in the logs, some addition
 First, install the [ASP.NET Core sink](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) with the command:
 
 ```
+dotnet add package Serilog.Sinks.SentrySDK.AspNetCore
 Install-Package Serilog.Sinks.SentrySDK.AspNetCore
 ```
 
