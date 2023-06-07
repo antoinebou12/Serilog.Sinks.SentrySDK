@@ -2,6 +2,8 @@
 
 A Serilog sink for Sentry that simplifies error and log management in your applications.
 
+Based on [serilog-contrib/serilog-sinks-sentry](https://github.com/serilog-contrib/serilog-sinks-sentry)
+
 ## Project Status
 
 [![.NET Core Test](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/tests.yml/badge.svg)](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/actions/workflows/tests.yml)
