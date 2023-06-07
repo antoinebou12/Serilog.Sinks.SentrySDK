@@ -93,6 +93,8 @@ jobs:
         - name: Codecov SentrySDK.AspNetCore.Tests
           uses: codecov/codecov-action@v3
           with:
+            target: 60%
+            threshold: 0.1
             files: "src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports/coverage.cobertura.xml"
             fail_ci_if_error: true
             token: ${{ secrets.CODECOV_TOKEN }}
@@ -100,6 +102,8 @@ jobs:
         - name: Codecov SentrySDK.Tests
           uses: codecov/codecov-action@v3
           with:
+            target: 60%
+            threshold: 0.1
             files: "src/Serilog.Sinks.SentrySDK.Tests/reports/coverage.cobertura.xml"
             fail_ci_if_error: true
             token: ${{ secrets.CODECOV_TOKEN }}
