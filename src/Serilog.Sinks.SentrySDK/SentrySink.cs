@@ -292,6 +292,10 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="logEvent">The log event to emit.</param>
         public void Emit(LogEvent logEvent)
         {
+            if (logEvent == null)
+            {
+                return;
+            }
             var level = GetSentryLevel(logEvent);
             var transaction = _sentrySdkWrapper.StartTransaction(
                 name: _transactionName,
@@ -357,6 +361,11 @@ namespace Serilog.Sinks.SentrySDK
         /// <returns>The Sentry level.</returns>
         private static SentryLevel GetSentryLevel(LogEvent logEvent)
         {
+            if (logEvent == null)
+            {
+                return SentryLevel.Error;
+            }
+
             return logEvent.Level switch
             {
                 LogEventLevel.Verbose => SentryLevel.Debug,
