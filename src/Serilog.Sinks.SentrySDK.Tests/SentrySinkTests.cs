@@ -51,14 +51,19 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 AutoSessionTracking = true,
                 EnableTracing = true,
                 TracesSampleRate = 1.0,
-                StackTraceMode = StackTraceMode.Enhanced
+                StackTraceMode = StackTraceMode.Enhanced,
+                ServerName = "test-server",
+                ShutdownTimeout = TimeSpan.FromSeconds(2.0),
+                MaxCacheItems = 30,
+                Distribution = "unspecified",
+                IsEnvironmentUser = true
             };
 
             _sentrySink = new SentrySink(
                 formatProvider: _formatProviderMock.Object,
                 sentrySdkWrapper: _sentrySdkWrapperMock.Object,
                 dsn: sentryOptions.Dsn,
-                tags: "tag1,tag2",
+                tags: "tag1=tag1,tag2=tag2",
                 attachStacktrace: sentryOptions.AttachStacktrace,
                 includeActivityData: true,
                 sendDefaultPii: sentryOptions.SendDefaultPii,
@@ -77,7 +82,12 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 enableTracing: true,
                 transactionService: _transactionServiceMock.Object,
                 tracesSampleRate: (float) sentryOptions.TracesSampleRate,
-                stackTraceMode: "Enhanced"
+                stackTraceMode: "Enhanced",
+                isEnvironmentUser: true,
+                shutdownTimeout: 2.0,
+                maxCacheItems: 30,
+                distribution: "unspecified",
+                sentryScopeStateProcessor: null
             );
 
         }

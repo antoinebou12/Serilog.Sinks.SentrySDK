@@ -150,11 +150,11 @@ namespace Serilog.Sinks.SentrySDK
         string transactionName, string operationName, float sampleRate,
         bool attachStacktrace, bool autoSessionTracking, bool enableTracing,
         ITransactionService transactionService, double tracesSampleRate, string stackTraceMode,
-        ISentryScopeStateProcessor sentryScopeStateProcessor = null,
-        bool isEnvironmentUser = false,
-        double shutdownTimeout = 2.0,
-        int maxCacheItems = 30,
-        string distribution = null)
+        bool isEnvironmentUser,
+        double shutdownTimeout,
+        int maxCacheItems,
+        string distribution,
+        ISentryScopeStateProcessor sentryScopeStateProcessor = null)
         {
             _formatProvider = formatProvider;
             _sentrySdkWrapper = sentrySdkWrapper;
@@ -312,6 +312,14 @@ namespace Serilog.Sinks.SentrySDK
                     scope.SetTags(
                         logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
                             .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
+
+                    if (_tags.Length > 0)
+                        {
+                        scope.SetTags(_tags.Select(t => t.Split('='))
+                            .Where(t => t.Length == 2)
+                            .ToDictionary(t => t[0], t => t[1]));
+
+                    }
 
                     var span = _transactionService.StartChild(
                         transaction: transaction,

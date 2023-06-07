@@ -1,0 +1,30 @@
+2023-06-06 22:05:09.848 -04:00 [ERR] Intentional error logged at 10:05:09 PM
+2023-06-06 22:05:09.961 -04:00 [WRN] Intentional error logged at 10:05:09 PM
+2023-06-06 22:05:09.961 -04:00 [INF] Intentional error logged at 10:05:09 PM
+2023-06-06 22:05:09.961 -04:00 [DBG] Intentional error logged at 10:05:09 PM
+2023-06-06 22:05:09.961 -04:00 [ERR] Failed to convert string to integer
+2023-06-06 22:05:09.964 -04:00 [ERR] Attempted division by zero
+2023-06-06 22:06:44.906 -04:00 [ERR] Intentional error logged at 10:06:44 PM
+2023-06-06 22:06:45.021 -04:00 [WRN] Intentional error logged at 10:06:44 PM
+2023-06-06 22:06:45.022 -04:00 [INF] Intentional error logged at 10:06:44 PM
+2023-06-06 22:06:45.022 -04:00 [DBG] Intentional error logged at 10:06:44 PM
+2023-06-06 22:06:45.022 -04:00 [ERR] Failed to convert string to integer
+2023-06-06 22:06:45.025 -04:00 [ERR] Attempted division by zero
+2023-06-06 22:07:51.484 -04:00 [ERR] Intentional error logged at 10:07:51 PM
+2023-06-06 22:07:51.603 -04:00 [WRN] Intentional error logged at 10:07:51 PM
+2023-06-06 22:07:51.603 -04:00 [INF] Intentional error logged at 10:07:51 PM
+2023-06-06 22:07:51.603 -04:00 [DBG] Intentional error logged at 10:07:51 PM
+2023-06-06 22:07:51.604 -04:00 [ERR] Failed to convert string to integer
+2023-06-06 22:07:51.607 -04:00 [ERR] Attempted division by zero
+2023-06-06 22:16:28.640 -04:00 [ERR] Intentional error logged at 10:16:28 PM
+2023-06-06 22:16:28.803 -04:00 [WRN] Intentional error logged at 10:16:28 PM
+2023-06-06 22:16:28.804 -04:00 [INF] Intentional error logged at 10:16:28 PM
+2023-06-06 22:16:28.804 -04:00 [DBG] Intentional error logged at 10:16:28 PM
+2023-06-06 22:16:28.804 -04:00 [ERR] Failed to convert string to integer
+2023-06-06 22:16:28.808 -04:00 [ERR] Attempted division by zero
+2023-06-06 22:38:25.404 -04:00 [ERR] Intentional error logged at 10:38:25 PM
+2023-06-06 22:38:25.527 -04:00 [WRN] Intentional error logged at 10:38:25 PM
+2023-06-06 22:38:25.527 -04:00 [INF] Intentional error logged at 10:38:25 PM
+2023-06-06 22:38:25.527 -04:00 [DBG] Intentional error logged at 10:38:25 PM
+2023-06-06 22:38:25.528 -04:00 [ERR] Failed to convert string to integer
+2023-06-06 22:38:25.531 -04:00 [ERR] Attempted division by zero

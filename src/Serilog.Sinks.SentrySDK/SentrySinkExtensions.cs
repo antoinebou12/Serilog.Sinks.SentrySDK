@@ -75,11 +75,11 @@ namespace Serilog.Sinks.SentrySDK
             ITransactionService transactionService = null,
             double tracesSampleRate = 1.0,
             string stackTraceMode = "Enhanced",
-            ISentryScopeStateProcessor sentryScopeStateProcessor = null,
-            bool isEnvironmentUser = false,
+            bool isEnvironmentUser = true,
             double shutdownTimeout = 2.0,
             int maxCacheItems = 30,
-            string distribution = null
+            string distribution = null,
+            ISentryScopeStateProcessor sentryScopeStateProcessor = null
             )
         {
             var options = new SentryOptions
@@ -99,7 +99,10 @@ namespace Serilog.Sinks.SentrySDK
                 TracesSampleRate = (float) tracesSampleRate,
                 StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
                 ServerName = serverName,
-
+                ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
+                MaxCacheItems = maxCacheItems,
+                Distribution = distribution,
+                IsEnvironmentUser = isEnvironmentUser
             };
 
             var sink = new SentrySink(
@@ -125,7 +128,12 @@ namespace Serilog.Sinks.SentrySDK
                 enableTracing,
                 transactionService,
                 tracesSampleRate,
-                stackTraceMode
+                stackTraceMode,
+                isEnvironmentUser,
+                shutdownTimeout,
+                maxCacheItems,
+                distribution,
+                sentryScopeStateProcessor
             );
 
             return loggerConfiguration.Sink(sink, restrictedToMinimumLevel);
