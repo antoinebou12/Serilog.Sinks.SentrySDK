@@ -77,7 +77,7 @@ jobs:
         with:
           dotnet-version: 6.0.100
       - name: Download NuGet packages
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: nuget-packages
           path: ./nupkgs
