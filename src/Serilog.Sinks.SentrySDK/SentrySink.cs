@@ -1,4 +1,5 @@
- using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections;
@@ -12,7 +13,6 @@ using Serilog.Parsing;
 
 namespace Serilog.Sinks.SentrySDK
 {
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SentrySink"/> class.
 	/// </summary>
