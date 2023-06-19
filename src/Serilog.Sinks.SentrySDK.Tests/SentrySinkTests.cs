@@ -8,7 +8,6 @@ using Sentry;
 using Serilog.Events;
 
 using Serilog.Parsing;
-using Ion.Framework.Serilog.Sinks.Sentry;
 
 using Xunit;
 
