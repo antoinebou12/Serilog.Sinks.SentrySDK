@@ -8,7 +8,7 @@ using Sentry;
 using Serilog.Events;
 
 using Serilog.Parsing;
-using Serilog.Sinks.SentrySDK;
+using Ion.Framework.Serilog.Sinks.Sentry;
 
 using Xunit;
 
@@ -65,7 +65,6 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 dsn: sentryOptions.Dsn,
                 tags: "tag1=tag1,tag2=tag2",
                 attachStacktrace: sentryOptions.AttachStacktrace,
-                includeActivityData: true,
                 sendDefaultPii: sentryOptions.SendDefaultPii,
                 maxBreadcrumbs: sentryOptions.MaxBreadcrumbs,
                 maxQueueItems: sentryOptions.MaxQueueItems,
@@ -74,7 +73,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 environment: sentryOptions.Environment,
                 serverName: sentryOptions.ServerName,
                 release: sentryOptions.Release,
-                restrictedToMinimumLevel: LogEventLevel.Error,
+                restrictedToMinimumLevel: LogEventLevel.Verbose.ToString(),
                 transactionName: null,
                 operationName: null,
                 sampleRate: (float) sentryOptions.SampleRate,
@@ -86,8 +85,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 isEnvironmentUser: true,
                 shutdownTimeout: 2.0,
                 maxCacheItems: 30,
-                distribution: "unspecified",
-                sentryScopeStateProcessor: null
+                distribution: "unspecified"
             );
 
         }
