@@ -1,29 +1,36 @@
 using System;
-using Xunit;
-using Serilog.Events;
-using Serilog;
 
-namespace Serilog.Sinks.SentrySDK.Tests
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
+using Moq;
+
+using Ion.Framework.Serilog.Sinks.Sentry;
+
+using Xunit;
+
+namespace Ion.Framework.Serilog.Sinks.Sentry
 {
-    public class SentrySinkExtensionsTests
+    public class SentrySinkContextMiddlewareExtensionsTests
     {
-        private readonly string _dsn = "your_sentry_dsn";
-        private readonly string _release = "test_release";
-        private readonly string _environment = "test_environment";
-        private readonly LogEventLevel _minimumLevel = LogEventLevel.Warning;
+        private readonly Mock<IApplicationBuilder> _appMock;
+
+        public SentrySinkContextMiddlewareExtensionsTests()
+        {
+            _appMock = new Mock<IApplicationBuilder>();
+        }
 
         [Fact]
-        public void TestSentryConfiguration()
+        public void AddSentryContext_ShouldUseMiddleware()
         {
-            var logger = new LoggerConfiguration()
-                .WriteTo.Sentry(_dsn, _release, _environment, _minimumLevel)
-                .CreateLogger();
+            _appMock.Setup(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()))
+                .Returns(_appMock.Object);
 
-            logger.Information("Test log");
+            var app = _appMock.Object.AddSentryContext();
 
-            // This isn't a real assertion - replace it with a check that the log appeared in Sentry.
-            // This will likely involve checking the Sentry API or your Sentry account.
-            Assert.True(true);
+            _appMock.Verify(app => app.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()), Times.Exactly(2));
+
+            Assert.Equal(_appMock.Object, app);
         }
     }
 }
