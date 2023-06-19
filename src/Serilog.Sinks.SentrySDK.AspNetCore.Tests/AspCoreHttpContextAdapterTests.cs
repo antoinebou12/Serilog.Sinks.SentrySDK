@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,14 +7,11 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 using Moq;
 
-using Serilog.Sinks.SentrySDK;
-using Serilog.Sinks.SentrySDK.AspNetCore;
 
 using Xunit;
 
