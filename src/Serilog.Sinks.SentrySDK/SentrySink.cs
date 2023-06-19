@@ -10,7 +10,6 @@ using Serilog.Events;
 
 namespace Serilog.Sinks.SentrySDK
 {
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SentrySink"/> class.
 	/// </summary>
