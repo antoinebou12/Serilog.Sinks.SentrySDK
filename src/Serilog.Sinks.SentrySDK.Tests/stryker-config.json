@@ -1,6 +1,6 @@
 {
   "stryker-config": {
-    "project": "Serilog.Sinks.Sentry",
+    "project": "Serilog.Sinks.SentrySDK",
     "reporters": [
       "progress",
       "html"
