@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Http;
 
 using Moq;
 
-using Ion.Framework.Serilog.Sinks.Sentry;
-
 using Xunit;
 
-namespace Ion.Framework.Serilog.Sinks.Sentry
+namespace Serilog.Sinks.SentrySDK
 {
     public class SentrySinkContextMiddlewareExtensionsTests
     {
