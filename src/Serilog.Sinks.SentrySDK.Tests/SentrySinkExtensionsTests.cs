@@ -3,11 +3,13 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
+using Serilog.Sinks.SentrySDK;
+
 using Moq;
 
 using Xunit;
 
-namespace Serilog.Sinks.SentrySDK
+namespace Serilog.Sinks.SentrySDK.Tests
 {
     public class SentrySinkContextMiddlewareExtensionsTests
     {
