@@ -1,0 +1,9 @@
+{
+  "stryker-config": {
+    "project": "Serilog.Sinks.SentrySDK.AspNetCore",
+    "reporters": [
+      "progress",
+      "html"
+    ]
+  }
+}
