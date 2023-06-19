@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Collections;
 
 using Sentry;
 
+
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Parsing;
 
 namespace Serilog.Sinks.SentrySDK
 {
