@@ -68,7 +68,7 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
           "diagnosticLevel": "Error",
           "environment": "Development",
           "operationName": "SentryConsole",
-          "release": "1.0.3",
+          "release": "1.0.5",
           "serverName": "SentryConsole",
           "dist": "SentryConsole",
           "tags": "SentryConsole=SentryConsole",
