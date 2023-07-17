@@ -1,14 +1,15 @@
-﻿using System;
+using System;
+
 using System.Collections.Generic;
+
 using System.IO;
+
 using System.Linq;
+
 using System.Security.Principal;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
-
-using Serilog.Sinks.SentrySDK;
-
-using System.Threading.Tasks;
 
 namespace Serilog.Sinks.SentrySDK.AspNetCore
 {
@@ -88,7 +89,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
         /// Gets the request body.
         /// </summary>
         /// <returns>The request body as a string, or null if the body cannot be read.</returns>
-        public object GetRequestBody()
+        public object? GetRequestBody()
         {
             if (_httpContext.Request.Body.CanSeek)
             {
@@ -107,7 +108,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
         /// Gets the request body.
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GetRequestBodyAsync()
+        public async Task<string?> GetRequestBodyAsync()
         {
             if (_httpContext.Request.Body.CanSeek)
             {

@@ -62,7 +62,7 @@ jobs:
       run: |
         ls ./nupkgs
     - name: Upload NuGet packages
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
@@ -77,7 +77,7 @@ jobs:
         with:
           dotnet-version: 6.0.100
       - name: Download NuGet packages
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: nuget-packages
           path: ./nupkgs

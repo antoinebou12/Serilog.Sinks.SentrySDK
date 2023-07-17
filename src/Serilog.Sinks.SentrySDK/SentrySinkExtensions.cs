@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System;
 using Serilog;
 using Serilog.Configuration;
@@ -7,14 +7,6 @@ using Sentry;
 
 namespace Serilog.Sinks.SentrySDK
 {
-    /// <summary>
-    /// Provides extension methods to integrate Sentry with Serilog.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// To use the Sentry sink, first install the <c>Serilog.Sinks.SentrySDK</c> package from NuGet.
-    /// </para>
-    /// </remarks>
     public static class SentrySinkExtensions
     {
         /// <summary>
@@ -22,8 +14,6 @@ namespace Serilog.Sinks.SentrySDK
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="dsn">The DSN of your Sentry project.</param>
-        /// <param name="active">Whether the Sentry integration is active or not.</param>
-        /// <param name="includeActivityData">Whether to include activity data or not.</param>
         /// <param name="sendDefaultPii">Whether to send default personally identifiable information or not.</param>
         /// <param name="maxBreadcrumbs">The maximum number of breadcrumbs that can be stored in memory.</param>
         /// <param name="maxQueueItems">The maximum number of events that can be stored in the queue.</param>
@@ -44,7 +34,6 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="transactionService">The service used for handling transactions.</param>
         /// <param name="tracesSampleRate"> The sample rate for traces.</param>
         /// <param name="stackTraceMode"></param>
-        /// <param name="sentryScopeStateProcessor"> The processor for the scope state.</param>
         /// <param name="isEnvironmentUser"> Whether to use the environment as the user or not.</param>
         /// <param name="shutdownTimeout"> The timeout for the shutdown.</param>
         /// <param name="maxCacheItems"> The maximum number of items to cache.</param>
@@ -53,33 +42,30 @@ namespace Serilog.Sinks.SentrySDK
         public static LoggerConfiguration Sentry(
             this LoggerSinkConfiguration loggerConfiguration,
             string dsn,
-            bool active = true,
-            bool includeActivityData = true,
             bool sendDefaultPii = true,
             int maxBreadcrumbs = 200,
             int maxQueueItems = 100,
             bool debug = true,
-            string diagnosticLevel = "Error",
-            string environment = null,
-            string serverName = null,
-            string release = null,
-            LogEventLevel restrictedToMinimumLevel = LogEventLevel.Error,
-            IFormatProvider formatProvider = null,
-            string tags = null,
-            string transactionName = null,
-            string operationName = null,
+            string diagnosticLevel = "Debug",
+            IFormatProvider? formatProvider = null,
+            string? environment = null,
+            string? serverName = null,
+            string? release = null,
+            string? restrictedToMinimumLevel = null,
+            string? tags = null,
+            string? transactionName = null,
+            string? operationName = null,
             float sampleRate = 1.0f,
             bool attachStacktrace = true,
             bool autoSessionTracking = true,
             bool enableTracing = true,
-            ITransactionService transactionService = null,
+            ITransactionService? transactionService = null,
             double tracesSampleRate = 1.0,
             string stackTraceMode = "Enhanced",
             bool isEnvironmentUser = true,
             double shutdownTimeout = 2.0,
             int maxCacheItems = 30,
-            string distribution = null,
-            ISentryScopeStateProcessor sentryScopeStateProcessor = null
+            string? distribution = null
             )
         {
             var options = new SentryOptions
@@ -92,11 +78,11 @@ namespace Serilog.Sinks.SentrySDK
                 MaxBreadcrumbs = maxBreadcrumbs,
                 MaxQueueItems = maxQueueItems,
                 DiagnosticLevel = Enum.Parse<SentryLevel>(diagnosticLevel, true),
-                SampleRate = (float) sampleRate,
+                SampleRate = (float)sampleRate,
                 AttachStacktrace = attachStacktrace,
                 AutoSessionTracking = autoSessionTracking,
                 EnableTracing = enableTracing,
-                TracesSampleRate = (float) tracesSampleRate,
+                TracesSampleRate = (float)tracesSampleRate,
                 StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
                 ServerName = serverName,
                 ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
@@ -110,7 +96,6 @@ namespace Serilog.Sinks.SentrySDK
                 new SentrySdkWrapper(options),
                 dsn,
                 tags,
-                includeActivityData,
                 sendDefaultPii,
                 maxBreadcrumbs,
                 maxQueueItems,
@@ -132,11 +117,10 @@ namespace Serilog.Sinks.SentrySDK
                 isEnvironmentUser,
                 shutdownTimeout,
                 maxCacheItems,
-                distribution,
-                sentryScopeStateProcessor
+                distribution
             );
-
-            return loggerConfiguration.Sink(sink, restrictedToMinimumLevel);
+            // restrictedToMinimumLevel string to LogEventLevel
+            return loggerConfiguration.Sink(sink, (LogEventLevel)Enum.Parse(typeof(LogEventLevel), restrictedToMinimumLevel ?? "Information", true));
         }
     }
 }

@@ -59,8 +59,6 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
         "Name": "Sentry",
         "Args": {
           "dsn": "",
-          "active": true,
-          "includeActivityData": true,
           "sendDefaultPii": true,
           "maxBreadcrumbs": 200,
           "maxQueueItems": 100,

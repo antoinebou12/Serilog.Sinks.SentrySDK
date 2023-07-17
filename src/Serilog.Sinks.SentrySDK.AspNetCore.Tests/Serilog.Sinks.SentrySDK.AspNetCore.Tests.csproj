@@ -1,21 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <RootNamespace>Ion.Framework.Serilog.Sinks.Sentry.AspNetCore.Tests</RootNamespace>
+    <AssemblyName>Ion.Framework.Serilog.Sinks.SentrySDK.AspNetCore.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.1" />
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="FluentAssertions" Version="6.11.0" />
-    <PackageReference Include="coverlet.msbuild" Version="3.1.1" PrivateAssets="all" />
-    <PackageReference Include="Sentry" Version="3.33.0" />
-    <PackageReference Include="Sentry.Serilog" Version="3.33.0" />
-    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="coverlet.msbuild" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Include="Sentry" Version="3.34.0" />
+    <PackageReference Include="Sentry.Serilog" Version="3.33.1" />
+    <PackageReference Include="Serilog" Version="3.0.1" />
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
