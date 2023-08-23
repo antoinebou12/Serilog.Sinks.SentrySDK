@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="Sentry" Version="3.34.0" />
     <PackageReference Include="Sentry.Serilog" Version="3.34.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
