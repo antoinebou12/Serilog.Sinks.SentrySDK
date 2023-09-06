@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>A Sentry sink for Serilog</Description>
@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="Sentry" Version="3.34.0" />
+    <PackageReference Include="Sentry" Version="3.36.0" />
     <PackageReference Include="Sentry.Serilog" Version="3.34.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
   </ItemGroup>
