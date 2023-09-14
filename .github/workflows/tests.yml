@@ -92,7 +92,7 @@ jobs:
               path: src/Serilog.Sinks.SentrySDK.Tests/reports
 
         - name: Codecov SentrySDK.AspNetCore.Tests
-          uses: codecov/codecov-action@v3
+          uses: codecov/codecov-action@v4
           with:
             target: 60%
             threshold: 0.1
@@ -101,7 +101,7 @@ jobs:
             token: ${{ secrets.CODECOV_TOKEN }}
 
         - name: Codecov SentrySDK.Tests
-          uses: codecov/codecov-action@v3
+          uses: codecov/codecov-action@v4
           with:
             target: 60%
             threshold: 0.1
