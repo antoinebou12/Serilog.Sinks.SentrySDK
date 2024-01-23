@@ -80,13 +80,13 @@ jobs:
           uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
         - name: Download reports SentrySDK.AspNetCore.Tests
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
           with:
             name: SentrySDK.AspNetCore.Tests
             path: src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports
 
         - name: Download reports SentrySDK.Tests
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
           with:
               name: SentrySDK.Tests
               path: src/Serilog.Sinks.SentrySDK.Tests/reports
