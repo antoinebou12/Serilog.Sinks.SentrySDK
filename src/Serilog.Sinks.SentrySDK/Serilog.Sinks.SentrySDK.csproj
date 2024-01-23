@@ -6,7 +6,7 @@
     <Authors>Antoine Boucher</Authors>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sinks.SentrySDK</AssemblyName>
+    <AssemblyName>Serilog.Sinks.SentrySDK.6</AssemblyName>
     <PackRelease>true</PackRelease>
     <PackageId>Serilog.Sinks.SentrySDK.6</PackageId>
     <PackageTags>Serilog Sink Sentry Logging</PackageTags>
