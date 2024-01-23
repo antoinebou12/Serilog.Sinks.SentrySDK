@@ -55,9 +55,9 @@ jobs:
       with:
         dotnet-version: 6.0.100
     - name: Pack Serilog.Sinks.SentrySDK
-      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs /p:PackageId=Serilog.Sinks.SentrySDK.6
+      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
-      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output ./nupkgs /p:PackageId=Serilog.Sinks.SentrySDK.AspNetCore.6
+      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output ./nupkgs
     - name: Check nupkgs directory
       run: |
         ls ./nupkgs
