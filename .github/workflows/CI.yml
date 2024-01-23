@@ -62,7 +62,7 @@ jobs:
       run: |
         ls ./nupkgs
     - name: Upload NuGet packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
