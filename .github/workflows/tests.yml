@@ -61,13 +61,13 @@ jobs:
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./reports/ /p:MergeWith=./reports/coverage.json src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
 
       - name: Upload coverage SentrySDK.AspNetCore.Tests to GitHub Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SentrySDK.AspNetCore.Tests
           path: src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports
 
       - name: Upload coverage SentrySDK.Tests to GitHub Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SentrySDK.Tests
           path: src/Serilog.Sinks.SentrySDK.Tests/reports
@@ -80,13 +80,13 @@ jobs:
           uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
         - name: Download reports SentrySDK.AspNetCore.Tests
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
           with:
             name: SentrySDK.AspNetCore.Tests
             path: src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/reports
 
         - name: Download reports SentrySDK.Tests
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
           with:
               name: SentrySDK.Tests
               path: src/Serilog.Sinks.SentrySDK.Tests/reports
