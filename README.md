@@ -19,11 +19,6 @@ Based on [serilog-contrib/serilog-sinks-sentry](https://github.com/serilog-contr
 | Serilog.Sinks.SentrySDK.AspNetCore | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6/) |
 
 
-> Q1 2024
-> ![serilog](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/assets/13888068/9bd394c0-0c78-4676-93ca-a7594fbeb537)
-
-> I moving the package to my personal account
-> ## Old package
 
 |                                    | Package                                                                            | Nuget                                                                                                                                                 |
 | ---------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
