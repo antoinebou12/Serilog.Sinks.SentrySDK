@@ -6,9 +6,9 @@
     <Authors>Antoine Boucher</Authors>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Serilog.Sinks.SentrySDK.AspNetCore.6</AssemblyName>
+    <AssemblyName>Serilog.Sinks.SentrySDK.AspNetCore</AssemblyName>
     <PackRelease>true</PackRelease>
-    <PackageId>Serilog.Sinks.SentrySDK.AspNetCore.6</PackageId>
+    <PackageId>Serilog.Sinks.SentrySDK.AspNetCore</PackageId>
     <PackageTags>Serilog Sink Sentry Logging Core</PackageTags>
     <PackageReleaseNotes>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</PackageProjectUrl>
