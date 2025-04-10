@@ -20,7 +20,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="FluentAssertions" Version="8.2.0" />
         <PackageReference Include="coverlet.msbuild" Version="6.0.2" PrivateAssets="all" />
         <PackageReference Include="Sentry" Version="3.41.4" />
         <PackageReference Include="Sentry.Serilog" Version="3.41.4" />
