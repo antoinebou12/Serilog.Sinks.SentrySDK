@@ -1,14 +1,11 @@
 using System;
-
 using System.Collections.Generic;
+using System.Reflection;
 using Moq;
-
 using Sentry;
-
 using Serilog.Events;
-
 using Serilog.Parsing;
-
+using Serilog.Sinks.SentrySDK;
 using Xunit;
 
 namespace Serilog.Sinks.SentrySDK.Tests
@@ -157,6 +154,154 @@ namespace Serilog.Sinks.SentrySDK.Tests
 
             // Assert
             Assert.Null(ex);
+        }
+
+        [Fact]
+        public void Emit_WhenTracingDisabled_DoesNotStartTransaction_CapturesMessage()
+        {
+            var wrapper = new Mock<ISentrySdkWrapper>();
+            wrapper.Setup(s => s.StartTransaction(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws(new InvalidOperationException("StartTransaction should not be used when tracing is off"));
+
+            using var sink = CreateTestSentrySink(wrapper.Object, enableTracing: false);
+
+            var logEvent = new LogEvent(DateTimeOffset.Now, LogEventLevel.Information, null,
+                new MessageTemplate("NoTrace", new List<MessageTemplateToken>()), new List<LogEventProperty>());
+
+            sink.Emit(logEvent);
+
+            wrapper.Verify(s => s.StartTransaction(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            wrapper.Verify(s => s.CaptureMessage("NoTrace", It.IsAny<SentryLevel>()), Times.Once);
+        }
+
+        [Fact]
+        public void Emit_WhenTracingDisabled_CapturesException()
+        {
+            var wrapper = new Mock<ISentrySdkWrapper>();
+            using var sink = CreateTestSentrySink(wrapper.Object, enableTracing: false);
+
+            var ex = new Exception("offline");
+            var logEvent = new LogEvent(DateTimeOffset.Now, LogEventLevel.Error, ex,
+                new MessageTemplate("Err", new List<MessageTemplateToken>()), new List<LogEventProperty>());
+
+            sink.Emit(logEvent);
+
+            wrapper.Verify(s => s.StartTransaction(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            wrapper.Verify(s => s.CaptureException(ex), Times.Once);
+        }
+
+        [Fact]
+        public void Constructor_InvokesConfigureSentryOptions()
+        {
+            var configured = false;
+            using var sink = CreateTestSentrySink(configureSentryOptions: _ => configured = true);
+            Assert.True(configured);
+        }
+
+        [Fact]
+        public void BeforeSendPipeline_WithEventIdInExceptionData_RemapsExtras()
+        {
+            using var sink = CreateTestSentrySink(beforeSend: null);
+
+            var ex = new Exception("with id");
+            ex.Data["EventId"] = "evt-99";
+            ex.Data["Other"] = "keep";
+
+            var incoming = new SentryEvent(ex);
+            var result = InvokeBeforeSendInternal(sink, incoming, new SentryHint());
+
+            Assert.NotNull(result);
+            Assert.NotNull(result!.Exception);
+            Assert.Equal("evt-99", result.Extra["EventId"].ToString());
+            Assert.Equal("keep", result.Extra["Other"].ToString());
+        }
+
+        [Fact]
+        public void BeforeSendPipeline_UserCallbackReceivesProcessedEvent()
+        {
+            SentryEvent? seen = null;
+            using var sink = CreateTestSentrySink(beforeSend: (e, _) =>
+            {
+                seen = e;
+                return e;
+            });
+
+            var ex = new Exception("x");
+            ex.Data["EventId"] = "1";
+            var incoming = new SentryEvent(ex);
+
+            InvokeBeforeSendInternal(sink, incoming, new SentryHint());
+
+            Assert.NotNull(seen);
+            Assert.Equal("1", seen!.Extra["EventId"].ToString());
+        }
+
+        [Fact]
+        public void BeforeSendPipeline_UserCallbackCanDropEvent()
+        {
+            using var sink = CreateTestSentrySink(beforeSend: (_, _) => null);
+
+            var incoming = new SentryEvent(new Exception("drop me"));
+            var result = InvokeBeforeSendInternal(sink, incoming, new SentryHint());
+
+            Assert.Null(result);
+        }
+
+        private static SentrySink CreateTestSentrySink(
+            ISentrySdkWrapper? wrapper = null,
+            bool enableTracing = true,
+            Action<SentryOptions>? configureSentryOptions = null,
+            Func<SentryEvent, SentryHint, SentryEvent?>? beforeSend = null)
+        {
+            var formatProvider = new Mock<IFormatProvider>().Object;
+            var transactionService = new Mock<ITransactionService>();
+            var spanMock = new Mock<ISpan>();
+            transactionService.Setup(s => s.StartChild(It.IsAny<ITransactionTracer>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(spanMock.Object);
+            wrapper ??= new Mock<ISentrySdkWrapper>().Object;
+
+            return new SentrySink(
+                formatProvider: formatProvider,
+                sentrySdkWrapper: wrapper,
+                dsn: "https://example@sentry.io/0",
+                tags: "",
+                sendDefaultPii: true,
+                maxBreadcrumbs: 50,
+                maxQueueItems: 100,
+                debug: true,
+                diagnosticLevel: SentryLevel.Warning.ToString(),
+                environment: "test",
+                serverName: "srv",
+                release: "1.0",
+                restrictedToMinimumLevel: LogEventLevel.Verbose.ToString(),
+                transactionName: null,
+                operationName: null,
+                sampleRate: 1f,
+                attachStacktrace: true,
+                autoSessionTracking: true,
+                enableTracing: enableTracing,
+                transactionService: transactionService.Object,
+                tracesSampleRate: 1.0,
+                stackTraceMode: "Enhanced",
+                isEnvironmentUser: true,
+                shutdownTimeout: 2.0,
+                maxCacheItems: 30,
+                distribution: "unspecified",
+                configureSentryOptions: configureSentryOptions,
+                beforeSend: beforeSend);
+        }
+
+        private static SentryEvent? InvokeBeforeSendInternal(SentrySink sink, SentryEvent @event, SentryHint hint)
+        {
+            var optionsField = typeof(SentrySink).GetField("_options", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(optionsField);
+            var options = (SentryOptions)optionsField!.GetValue(sink)!;
+
+            var prop = typeof(SentryOptions).GetProperty("BeforeSendInternal", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(prop);
+            var del = (Func<SentryEvent, SentryHint, SentryEvent?>?)prop!.GetValue(options);
+            Assert.NotNull(del);
+            return del!(@event, hint);
         }
     }
 }
