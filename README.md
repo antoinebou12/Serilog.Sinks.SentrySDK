@@ -247,11 +247,11 @@ Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platf
 | --- | --- | --- |
 | `AddJsonConverter(JsonConverter converter)` | Adds a `JsonConverter` used when serializing or deserializing JSON in the SDK. | Not exposed |
 | `SetBeforeBreadcrumb(Func<Breadcrumb, Breadcrumb?> beforeBreadcrumb)` | Sets a callback when a breadcrumb is about to be stored. | Not exposed |
-| `SetBeforeBreadcrumb(Func<Breadcrumb, Hint, Breadcrumb?> beforeBreadcrumb)` | Overload of `SetBeforeBreadcrumb` that accepts a `Hint`. | Not exposed |
-| `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)` | Configures a callback before sending an error event. | Use optional `beforeSend` on `WriteTo.Sentry` (Hint overload not separately exposed) |
-| `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)` | Overload of `SetBeforeSend` that accepts a `Hint`. | Optional `beforeSend` parameter (`Func<SentryEvent, Hint, SentryEvent?>`) |
+| `SetBeforeBreadcrumb(Func<Breadcrumb, SentryHint, Breadcrumb?> beforeBreadcrumb)` | Overload of `SetBeforeBreadcrumb` that accepts a `SentryHint`. | Not exposed |
+| `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)` | Configures a callback before sending an error event. | Use optional `beforeSend` on `WriteTo.Sentry` (`SentryHint` overload not separately exposed) |
+| `SetBeforeSend(Func<SentryEvent, SentryHint, SentryEvent?> beforeSend)` | Overload of `SetBeforeSend` that accepts a `SentryHint`. | Optional `beforeSend` parameter (`Func<SentryEvent, SentryHint, SentryEvent?>`) |
 | `SetBeforeSendTransaction(Func<Transaction, Transaction?> beforeSendTransaction)` | Configures a callback before sending a transaction. | Not exposed |
-| `SetBeforeSendTransaction(Func<Transaction, Hint, Transaction?> beforeSendTransaction)` | Overload of `SetBeforeSendTransaction` that accepts a `Hint`. | Not exposed |
+| `SetBeforeSendTransaction(Func<Transaction, SentryHint, Transaction?> beforeSendTransaction)` | Overload of `SetBeforeSendTransaction` that accepts a `SentryHint`. | Not exposed |
 
 ### Mapping to `WriteTo.Sentry`
 
@@ -266,7 +266,7 @@ These parameters are part of the Serilog configuration API but are not direct `S
 | `transactionService` | Optional `ITransactionService` for span creation (dependency injection). |
 | `enableTracing` | When `false`, sets `TracesSampleRate` to `0` and skips per-log transactions/spans in the sink. When `true`, uses `tracesSampleRate` for performance monitoring. |
 | `configureSentryOptions` | Optional `Action<SentryOptions>` for init-time flags (for example structured logs or metrics). |
-| `beforeSend` | Optional `Func<SentryEvent, Hint, SentryEvent?>` chained after internal `EventId` handling. |
+| `beforeSend` | Optional `Func<SentryEvent, SentryHint, SentryEvent?>` chained after internal `EventId` handling. |
 
 ### Further reading (Sentry .NET **6.3.1**)
 

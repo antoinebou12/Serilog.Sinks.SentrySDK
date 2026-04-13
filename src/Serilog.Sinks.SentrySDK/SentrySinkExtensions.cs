@@ -69,7 +69,7 @@ namespace Serilog.Sinks.SentrySDK
             int maxCacheItems = 30,
             string? distribution = null,
             Action<SentryOptions>? configureSentryOptions = null,
-            Func<SentryEvent, Hint, SentryEvent?>? beforeSend = null
+            Func<SentryEvent, SentryHint, SentryEvent?>? beforeSend = null
             )
         {
             var sink = new SentrySink(

@@ -174,7 +174,7 @@ namespace Serilog.Sinks.SentrySDK
             int maxCacheItems,
             string distribution,
             Action<SentryOptions>? configureSentryOptions = null,
-            Func<SentryEvent, Hint, SentryEvent?>? beforeSend = null
+            Func<SentryEvent, SentryHint, SentryEvent?>? beforeSend = null
         )
         {
             _formatProvider = formatProvider;
