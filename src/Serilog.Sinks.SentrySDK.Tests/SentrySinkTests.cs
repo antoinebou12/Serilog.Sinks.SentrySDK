@@ -89,7 +89,9 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 isEnvironmentUser: true,
                 shutdownTimeout: 2.0,
                 maxCacheItems: 30,
-                distribution: "unspecified"
+                distribution: "unspecified",
+                configureSentryOptions: null,
+                beforeSend: null
             );
 
         }

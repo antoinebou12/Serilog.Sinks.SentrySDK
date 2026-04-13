@@ -30,6 +30,8 @@ dotnet add package Serilog.Sinks.SentrySDK
 Install-Package Serilog.Sinks.SentrySDK
 ```
 
+This package references the **Sentry** NuGet package (**6.3.1**), the same major line as the [Sentry for .NET](https://docs.sentry.io/platforms/dotnet/) documentation. For generic SDK setup (DSN, `SendDefaultPii`, debug), see the official [Quick Start](https://docs.sentry.io/platforms/dotnet/). Initialize the SDK **as early as possible** so startup failures are reported. This sink calls [`SentrySdk.Init`](https://docs.sentry.io/platforms/dotnet/configuration/options/) internally when you configure `WriteTo.Sentry` with a DSN; avoid calling `SentrySdk.Init` again for the same process unless you coordinate a single initialization path.
+
 ## Demos
 
 Demos demonstrating how to use this library can be found [here](demos/) and in [demos/README.md](demos/README.md).
@@ -154,9 +156,17 @@ var configuration = new ConfigurationBuilder()
 log.Error("This error goes to Sentry.");
 ```
 
+Optional **`configureSentryOptions`** and **`beforeSend`** parameters on `WriteTo.Sentry` map to init-time `SentryOptions` and a chained **`SetBeforeSend`** (see [Data scrubbing](#data-scrubbing) and the [Methods](#methods) table).
+
 ### Data scrubbing
 
-The public `WriteTo.Sentry` extension does not take a scrubber parameter. To strip or redact data before it reaches Sentry, use Serilog filters and enrichers on the logging pipeline, or configure advanced behavior by extending the library and working with `SentryOptions` (for example `SetBeforeSend`) where you control initialization.
+Client-side scrubbing of events is done with **`SetBeforeSend`** / **`SetBeforeSendTransaction`** on [`SentryOptions`](https://docs.sentry.io/platforms/dotnet/configuration/options/) at init time; see [Scrubbing sensitive data](https://docs.sentry.io/platforms/dotnet/data-management/sensitive-data/) in the Sentry .NET docs. You can also use **server-side** scrubbing in your Sentry project settings so data is not stored.
+
+The `WriteTo.Sentry` overload supports an optional **`beforeSend`** callback (chained after the sink’s internal `EventId` handling). Use optional **`configureSentryOptions`** for other flags (for example **`EnableLogs`**, **`EnableMetrics`**, **`SetBeforeSendMetric`**) without calling **`SetBeforeSend`** in that callback, because the sink registers its own `SetBeforeSend` chain—use **`beforeSend`** for event filtering instead.
+
+For background on what the SDK may collect, see [Data collected](https://docs.sentry.io/platforms/dotnet/data-management/data-collected/) and the [Data Management](https://docs.sentry.io/platforms/dotnet/data-management/) hub.
+
+You can still use Serilog **filters** and **enrichers** to limit what reaches the sink.
 
 ### Capturing HttpContext (ASP.NET Core)
 
@@ -224,7 +234,7 @@ Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platf
 | `Environment` | Gets or sets the environment the application is running in. | Yes — `environment` |
 | `Distribution` | Gets or sets the distribution of the application, associated with the release set in `SentryOptions.Release`. | Yes — `distribution` |
 | `Release` | Gets or sets the release information for the application. | Yes — `release` |
-| `BeforeSend` | Gets or sets a callback invoked before sending an event to Sentry. | Internal only — the sink registers `SetBeforeSend` for `EventId` handling; not user-pluggable from the extension |
+| `BeforeSend` | Gets or sets a callback invoked before sending an event to Sentry. | Chained — optional `beforeSend` on `WriteTo.Sentry` runs after the sink’s `EventId` mapping; optional `configureSentryOptions` for other options (do not call `SetBeforeSend` there) |
 | `Debug` | Enables SDK debug mode (verbose client logging). | Yes — `debug` |
 | `DiagnosticLevel` | Minimum level for SDK diagnostic log output when `Debug` is enabled. | Yes — `diagnosticLevel` |
 | `TracesSampleRate` | Sample rate for **performance monitoring** (transactions/spans); separate from error `SampleRate`. | Yes — `tracesSampleRate` |
@@ -238,8 +248,8 @@ Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platf
 | `AddJsonConverter(JsonConverter converter)` | Adds a `JsonConverter` used when serializing or deserializing JSON in the SDK. | Not exposed |
 | `SetBeforeBreadcrumb(Func<Breadcrumb, Breadcrumb?> beforeBreadcrumb)` | Sets a callback when a breadcrumb is about to be stored. | Not exposed |
 | `SetBeforeBreadcrumb(Func<Breadcrumb, Hint, Breadcrumb?> beforeBreadcrumb)` | Overload of `SetBeforeBreadcrumb` that accepts a `Hint`. | Not exposed |
-| `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)` | Configures a callback before sending an error event. | Not exposed (reserved; see `BeforeSend` above) |
-| `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)` | Overload of `SetBeforeSend` that accepts a `Hint`. | Not exposed |
+| `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)` | Configures a callback before sending an error event. | Use optional `beforeSend` on `WriteTo.Sentry` (Hint overload not separately exposed) |
+| `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)` | Overload of `SetBeforeSend` that accepts a `Hint`. | Optional `beforeSend` parameter (`Func<SentryEvent, Hint, SentryEvent?>`) |
 | `SetBeforeSendTransaction(Func<Transaction, Transaction?> beforeSendTransaction)` | Configures a callback before sending a transaction. | Not exposed |
 | `SetBeforeSendTransaction(Func<Transaction, Hint, Transaction?> beforeSendTransaction)` | Overload of `SetBeforeSendTransaction` that accepts a `Hint`. | Not exposed |
 
@@ -254,4 +264,15 @@ These parameters are part of the Serilog configuration API but are not direct `S
 | `tags` | Comma-separated `key=value` pairs applied on the Sentry scope. |
 | `transactionName`, `operationName` | Used for scope tags and transaction naming in the sink. |
 | `transactionService` | Optional `ITransactionService` for span creation (dependency injection). |
-| `enableTracing` | Accepted by the extension for API compatibility; **not** currently applied to `SentryOptions` in the sink implementation. |
+| `enableTracing` | When `false`, sets `TracesSampleRate` to `0` and skips per-log transactions/spans in the sink. When `true`, uses `tracesSampleRate` for performance monitoring. |
+| `configureSentryOptions` | Optional `Action<SentryOptions>` for init-time flags (for example structured logs or metrics). |
+| `beforeSend` | Optional `Func<SentryEvent, Hint, SentryEvent?>` chained after internal `EventId` handling. |
+
+### Further reading (Sentry .NET **6.3.1**)
+
+- [Data Management](https://docs.sentry.io/platforms/dotnet/data-management/) — overview of collection, scrubbing, and debug symbols.
+- [Metrics](https://docs.sentry.io/platforms/dotnet/) (product docs: **Metrics**, beta) — `SentrySdk.Metrics` (SDK **≥ 6.1**); options such as **`EnableMetrics`** and **`SetBeforeSendMetric`** are set on `SentryOptions` at init.
+- [Structured logs](https://docs.sentry.io/platforms/dotnet/) (product docs: **Logs**) — **`EnableLogs`**, **`SetBeforeSendLog`**, `SentrySdk.Logger` (SDK **≥ 5.14**).
+- [Event processors](https://docs.sentry.io/platforms/dotnet/enriching-events/event-processors/) — differ from **`BeforeSend`** (runs last).
+- [Debug information files](https://docs.sentry.io/platforms/dotnet/data-management/debug-files/) — better stack traces for release builds.
+- [Migration guide](https://docs.sentry.io/platforms/dotnet/migration/) — upgrading between SDK versions.

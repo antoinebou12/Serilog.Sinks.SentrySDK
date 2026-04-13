@@ -46,11 +46,10 @@ namespace Serilog.Sinks.SentrySDK
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SentrySdkWrapper"/> class.
+        /// Initialization is performed by <see cref="SentrySink"/> via a single <see cref="SentrySdk.Init(SentryOptions)"/> call.
         /// </summary>
-        /// <param name="options"></param>
-        public SentrySdkWrapper(SentryOptions options)
+        public SentrySdkWrapper()
         {
-            SentrySdk.Init(options);
         }
         /// <inheritdoc/>
         public void CaptureMessage(string message, SentryLevel level)
@@ -115,6 +114,7 @@ namespace Serilog.Sinks.SentrySDK
         private readonly ISentrySdkWrapper _sentrySdkWrapper;
         private readonly ITransactionService _transactionService;
         private readonly string _restrictedToMinimumLevel;
+        private readonly bool _enableTracing;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SentrySink"/> class.
@@ -145,6 +145,8 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="shutdownTimeout"> shutdown timeout</param>
         /// <param name="maxCacheItems"> max cache items</param>
         /// <param name="distribution"> distribution</param>
+        /// <param name="configureSentryOptions">Optional callback for advanced <see cref="SentryOptions"/> (for example metrics, structured logs). Invoked before <c>SetBeforeSend</c>; avoid calling <c>SetBeforeSend</c> here because the sink registers a chained callback—use <paramref name="beforeSend"/> instead.</param>
+        /// <param name="beforeSend">Optional callback after the sink's EventId mapping. Return <c>null</c> to discard the event.</param>
         public SentrySink(
             IFormatProvider formatProvider,
             ISentrySdkWrapper sentrySdkWrapper,
@@ -170,7 +172,9 @@ namespace Serilog.Sinks.SentrySDK
             bool isEnvironmentUser,
             double shutdownTimeout,
             int maxCacheItems,
-            string distribution
+            string distribution,
+            Action<SentryOptions>? configureSentryOptions = null,
+            Func<SentryEvent, Hint, SentryEvent?>? beforeSend = null
         )
         {
             _formatProvider = formatProvider;
@@ -193,6 +197,8 @@ namespace Serilog.Sinks.SentrySDK
                 _transactionService = transactionService;
             }
 
+            _enableTracing = enableTracing;
+
             _options = new SentryOptions
             {
                 Dsn = dsn,
@@ -207,37 +213,50 @@ namespace Serilog.Sinks.SentrySDK
                 AttachStacktrace = attachStacktrace,
                 AutoSessionTracking = autoSessionTracking,
                 ServerName = serverName ?? Environment.MachineName,
-                TracesSampleRate = tracesSampleRate,
+                TracesSampleRate = enableTracing ? tracesSampleRate : 0.0,
                 StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
                 IsEnvironmentUser = isEnvironmentUser,
                 ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
                 MaxCacheItems = (int)(maxCacheItems == 0 ? (int?)null : maxCacheItems),
                 Distribution = distribution,
             };
+            configureSentryOptions?.Invoke(_options);
+            if (!enableTracing)
+            {
+                _options.TracesSampleRate = 0.0;
+            }
+
             _options.SetBeforeSend((sentryEvent, hint) =>
             {
-                if (sentryEvent.Exception != null && sentryEvent.Exception.Data.Contains("EventId"))
+                SentryEvent? processed = sentryEvent;
+                if (processed?.Exception != null && processed.Exception.Data.Contains("EventId"))
                 {
-                    var newEvent = new SentryEvent(sentryEvent.Exception)
+                    var newEvent = new SentryEvent(processed.Exception)
                     {
-                        Level = sentryEvent.Level // Also copy the Level from the original event
+                        Level = processed.Level // Also copy the Level from the original event
                     };
 
-                    foreach (DictionaryEntry entry in sentryEvent.Exception.Data)
+                    foreach (DictionaryEntry entry in processed.Exception.Data)
                     {
                         var key = entry.Key.ToString();
                         if (key == "EventId")
                         {
-                            newEvent.SetExtra(key, sentryEvent.Exception.Data["EventId"].ToString());
+                            newEvent.SetExtra(key, processed.Exception.Data["EventId"].ToString());
                         }
                         else
                         {
                             newEvent.SetExtra(key, entry.Value.ToString());
                         }
                     }
-                    return newEvent;
+                    processed = newEvent;
                 }
-                return sentryEvent;
+
+                if (beforeSend != null)
+                {
+                    return beforeSend(processed, hint);
+                }
+
+                return processed;
             });
             IDisposable? sentryDisposable = null;
             try
@@ -302,6 +321,12 @@ namespace Serilog.Sinks.SentrySDK
                 return;
             }
             var level = GetSentryLevel(logEvent);
+            if (!_enableTracing)
+            {
+                EmitWithoutTracing(logEvent, level);
+                return;
+            }
+
             var transaction = _sentrySdkWrapper.StartTransaction(
                 name: _transactionName + " " + logEvent.MessageTemplate.Text,
                 operation: _operationName + " " + logEvent.MessageTemplate.Text
@@ -420,6 +445,60 @@ namespace Serilog.Sinks.SentrySDK
                 {
                     transaction?.Finish();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Captures the log event without starting a performance transaction or span (when tracing is disabled).
+        /// </summary>
+        private void EmitWithoutTracing(LogEvent logEvent, SentryLevel level)
+        {
+            using (SentrySdk.PushScope())
+            {
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    scope.Level = level;
+                    scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
+                        .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
+                    scope.SetTags(
+                        logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
+                            .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
+
+                    if (_tags.Length > 0)
+                    {
+                        scope.SetTags(_tags.Select(t => t.Split('='))
+                            .Where(t => t.Length == 2)
+                            .ToDictionary(t => t[0], t => t[1]));
+                    }
+
+                    scope.SetExtras((logEvent.Exception?.Data ?? new Dictionary<string, object>())
+                        .Cast<KeyValuePair<string, object?>>());
+
+                    scope.SetExtras(logEvent.MessageTemplate.Tokens
+                        .OfType<PropertyToken>()
+                        .Select(pt => new KeyValuePair<string, object>(pt.PropertyName, logEvent.Properties[pt.PropertyName]))
+                        .Where(pair => _tags.All(t => t != pair.Key))
+                        .ToDictionary(pair => pair.Key, pair => (object?)pair.Value));
+
+                    scope.AddBreadcrumb(
+                        new Breadcrumb(
+                            message: logEvent.MessageTemplate.Text,
+                            type: "log",
+                            data: logEvent.Properties.ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)),
+                            category: logEvent.Level.ToString(),
+                            level: GetBreadcrumbLevel(logEvent)
+                        ));
+
+                    if (logEvent.Exception == null)
+                    {
+                        _sentrySdkWrapper.CaptureMessage(logEvent.MessageTemplate.Text, level);
+                    }
+                    else
+                    {
+                        _sentrySdkWrapper.CaptureException(logEvent.Exception);
+                        scope.SetTag("exception_type", logEvent.Exception.GetType().Name);
+                    }
+                });
             }
         }
 

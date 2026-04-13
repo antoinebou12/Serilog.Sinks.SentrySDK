@@ -1,5 +1,4 @@
 #nullable enable
-using System.Diagnostics;
 using System;
 using Serilog;
 using Serilog.Configuration;
@@ -39,6 +38,8 @@ namespace Serilog.Sinks.SentrySDK
         /// <param name="shutdownTimeout"> The timeout for the shutdown.</param>
         /// <param name="maxCacheItems"> The maximum number of items to cache.</param>
         /// <param name="distribution"> The distribution of your application.</param>
+        /// <param name="configureSentryOptions">Optional callback for advanced <see cref="SentryOptions"/> (for example <c>EnableLogs</c>, <c>EnableMetrics</c>). Do not call <c>SetBeforeSend</c> here; use <paramref name="beforeSend"/> so it chains with the sink.</param>
+        /// <param name="beforeSend">Optional <c>SetBeforeSend</c> hook after the sink's EventId handling.</param>
         /// <returns>Logger configuration, allowing configuration to continue.</returns>
         public static LoggerConfiguration Sentry(
             this LoggerSinkConfiguration loggerConfiguration,
@@ -66,34 +67,14 @@ namespace Serilog.Sinks.SentrySDK
             bool isEnvironmentUser = true,
             double shutdownTimeout = 2.0,
             int maxCacheItems = 30,
-            string? distribution = null
+            string? distribution = null,
+            Action<SentryOptions>? configureSentryOptions = null,
+            Func<SentryEvent, Hint, SentryEvent?>? beforeSend = null
             )
         {
-            var options = new SentryOptions
-            {
-                Dsn = dsn,
-                Debug = debug,
-                Environment = environment,
-                Release = release,
-                SendDefaultPii = sendDefaultPii,
-                MaxBreadcrumbs = maxBreadcrumbs,
-                MaxQueueItems = maxQueueItems,
-                DiagnosticLevel = Enum.Parse<SentryLevel>(diagnosticLevel, true),
-                SampleRate = (float)sampleRate,
-                AttachStacktrace = attachStacktrace,
-                AutoSessionTracking = autoSessionTracking,
-                TracesSampleRate = (float)tracesSampleRate,
-                StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
-                ServerName = serverName,
-                ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
-                MaxCacheItems = maxCacheItems,
-                Distribution = distribution,
-                IsEnvironmentUser = isEnvironmentUser
-            };
-
             var sink = new SentrySink(
                 formatProvider,
-                new SentrySdkWrapper(options),
+                new SentrySdkWrapper(),
                 dsn,
                 tags,
                 sendDefaultPii,
@@ -117,7 +98,9 @@ namespace Serilog.Sinks.SentrySDK
                 isEnvironmentUser,
                 shutdownTimeout,
                 maxCacheItems,
-                distribution
+                distribution,
+                configureSentryOptions,
+                beforeSend
             );
             // restrictedToMinimumLevel string to LogEventLevel
             return loggerConfiguration.Sink(sink, (LogEventLevel)Enum.Parse(typeof(LogEventLevel), restrictedToMinimumLevel ?? "Information", true));
