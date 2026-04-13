@@ -1,3 +1,4 @@
+#nullable enable
 using Serilog;
 using Serilog.Sinks.SentrySDK;
 using Xunit;

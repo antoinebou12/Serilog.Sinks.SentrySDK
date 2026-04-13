@@ -103,7 +103,7 @@ namespace Serilog.Sinks.SentrySDK
     /// <summary>
     /// Provides a sink that directs log events to the Sentry service.
     /// </summary>
-    public class SentrySink : ILogEventSink
+    public class SentrySink : ILogEventSink, IDisposable
     {
         private readonly IFormatProvider _formatProvider;
         private readonly string[] _tags;
