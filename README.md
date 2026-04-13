@@ -15,13 +15,6 @@ Based on [serilog-contrib/serilog-sinks-sentry](https://github.com/serilog-contr
 
 |                                    | Package                                                                            | Nuget                                                                                                                                                 |
 | ---------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Serilog.Sinks.SentrySDK            | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6/)            | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6/)                       |
-| Serilog.Sinks.SentrySDK.AspNetCore | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6/) |
-
-
-
-|                                    | Package                                                                            | Nuget                                                                                                                                                 |
-| ---------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Serilog.Sinks.SentrySDK            | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)            | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK/)                       |
 | Serilog.Sinks.SentrySDK.AspNetCore | [Package Link](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore/) |
 
