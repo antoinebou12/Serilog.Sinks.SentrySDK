@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.100
+        dotnet-version: 8.0.x
     - name: Install dependencies - Serilog.Sinks.SentrySDK
       run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
     - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
@@ -39,7 +39,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.100
+        dotnet-version: 8.0.x
     - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
       run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
     - name: Test - Serilog.Sinks.SentrySDK.Tests
@@ -53,7 +53,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.100
+        dotnet-version: 8.0.x
     - name: Pack Serilog.Sinks.SentrySDK
       run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
@@ -75,7 +75,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.100
+          dotnet-version: 8.0.x
       - name: Download NuGet packages
         uses: actions/download-artifact@v4
         with:
