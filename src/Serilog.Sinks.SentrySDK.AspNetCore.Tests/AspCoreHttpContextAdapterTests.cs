@@ -53,8 +53,8 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         [Fact]
         public void RequestHeaders_ReturnsCorrectHeaders()
         {
-            _httpContext.Request.Headers.Add("header1", new StringValues("value1"));
-            _httpContext.Request.Headers.Add("header2", new StringValues("value2 value3"));
+            _httpContext.Request.Headers["header1"] = new StringValues("value1");
+            _httpContext.Request.Headers["header2"] = new StringValues("value2 value3");
 
             var resultHeaders = _aspCoreHttpContextAdapter.RequestHeaders;
 
@@ -150,7 +150,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         public void RequestUserAgent_ReturnsCorrectUserAgent()
         {
             var expected = "TestAgent";
-            _httpContext.Request.Headers.Add("User-Agent", new StringValues(expected));
+            _httpContext.Request.Headers["User-Agent"] = new StringValues(expected);
 
             Assert.Equal(expected, _aspCoreHttpContextAdapter.RequestUserAgent);
         }
