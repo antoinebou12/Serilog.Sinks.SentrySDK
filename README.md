@@ -117,16 +117,17 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
           "operationName": "SentryConsole",
           "release": "1.0.5",
           "serverName": "SentryConsole",
-          "dist": "SentryConsole",
+          "distribution": "SentryConsole",
           "tags": "SentryConsole=SentryConsole",
           "tracesSampleRate": 1.0,
-          "tracesSampler": "AlwaysSample",
           "stackTraceMode": "Enhanced",
-          "isGlobalModeEnabled": true,
           "sampleRate": 1.0,
           "attachStacktrace": true,
           "autoSessionTracking": true,
-          "enableTracing": true
+          "enableTracing": true,
+          "isEnvironmentUser": true,
+          "shutdownTimeout": 2.0,
+          "maxCacheItems": 30
         }
       }
     ],
@@ -153,18 +154,9 @@ var configuration = new ConfigurationBuilder()
 log.Error("This error goes to Sentry.");
 ```
 
-### Data Scrubbing
+### Data scrubbing
 
-Data scrubbing allows you to sanitize your logs before they are sent to Sentry. This can be useful for removing sensitive information.
-
-To use it, provide a custom `IScrubber` implementation when setting up the Sentry Sink:
-
-```csharp
-var log = new LoggerConfiguration()
-    .WriteTo.Sentry("Sentry DSN", dataScrubber: new MyDataScrubber())
-    .Enrich.FromLogContext()
-    .CreateLogger();
-```
+The public `WriteTo.Sentry` extension does not take a scrubber parameter. To strip or redact data before it reaches Sentry, use Serilog filters and enrichers on the logging pipeline, or configure advanced behavior by extending the library and working with `SentryOptions` (for example `SetBeforeSend`) where you control initialization.
 
 ### Capturing HttpContext (ASP.NET Core)
 
@@ -207,32 +199,59 @@ With these steps, your logs will include detailed information about the HTTP con
 
 
 ## Sentry SDK
+
+Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platforms/dotnet/configuration/options/) (this package references Sentry **6.3.1**). The **This sink** column describes how each member relates to `WriteTo.Sentry` in this library.
+
 ### Properties
-* `BackgroundWorker`: A property that gets or sets the worker used by the client to pass envelopes.
-* `SentryScopeStateProcessor`: A property to get or set the Scope state processor.
-* `SendDefaultPii`: A property to get or set whether to include default Personal Identifiable Information.
-* `NetworkStatusListener`: A property to get or set a mechanism to convey network status to the caching transport.
-* `ServerName`: A property to get or set the name of the server running the application.
-* `AttachStacktrace`: A property to get or set whether to send the stack trace of an event captured without an exception.
-* `IsEnvironmentUser`: A property to get or set whether to report the System.Environment.UserName as the User affected in the event.
-* `SampleRate`: A property to get or set the optional sample rate.
-* `ShutdownTimeout`: A property to get or set how long to wait for events to be sent before shutdown.
-* `MaxBreadcrumbs`: A property to get or set the maximum breadcrumbs.
-* `MaxQueueItems`: A property to get or set the maximum number of events to keep while the worker attempts to send them.
-* `BeforeBreadcrumb`: A property to get or set a callback function to be invoked when a breadcrumb is about to be stored.
-* `BeforeSendTransaction`: A property to get or set a callback to invoke before sending a transaction to Sentry.
-* `MaxCacheItems`: A property to get or set the maximum number of events to keep in cache.
-* `Dsn`: A property to get or set the Data Source Name of a given project in Sentry.
-* `Environment`: A property to get or set the environment the application is running.
-* `Distribution`: A property to get or set the distribution of the application, associated with the release set in `SentryOptions.Release`.
-* `Release`: A property to get or set the release information for the application.
-* `BeforeSend`: A property to get or set a callback to invoke before sending an event to Sentry.
+
+| Property | Description | This sink |
+| --- | --- | --- |
+| `BackgroundWorker` | Gets or sets the worker used by the client to pass envelopes. | Not exposed |
+| `SentryScopeStateProcessor` | Gets or sets the scope state processor. | Not exposed |
+| `SendDefaultPii` | Gets or sets whether to include default personally identifiable information. | Yes — `sendDefaultPii` |
+| `NetworkStatusListener` | Gets or sets a mechanism to convey network status to the caching transport. | Not exposed |
+| `ServerName` | Gets or sets the name of the server running the application. | Yes — `serverName` (if omitted, the sink defaults to the machine name) |
+| `AttachStacktrace` | Gets or sets whether to send the stack trace of an event captured without an exception. | Yes — `attachStacktrace` |
+| `IsEnvironmentUser` | Gets or sets whether to report `System.Environment.UserName` as the user affected in the event. | Yes — `isEnvironmentUser` |
+| `SampleRate` | Gets or sets the optional sample rate for **error events**. | Yes — `sampleRate` |
+| `ShutdownTimeout` | Gets or sets how long to wait for events to be sent before shutdown. | Yes — `shutdownTimeout` (seconds) |
+| `MaxBreadcrumbs` | Gets or sets the maximum breadcrumbs. | Yes — `maxBreadcrumbs` |
+| `MaxQueueItems` | Gets or sets the maximum number of events to keep while the worker attempts to send them. | Yes — `maxQueueItems` |
+| `BeforeBreadcrumb` | Gets or sets a callback invoked when a breadcrumb is about to be stored. | Not exposed |
+| `BeforeSendTransaction` | Gets or sets a callback invoked before sending a transaction to Sentry. | Not exposed |
+| `MaxCacheItems` | Gets or sets the maximum number of events to keep in cache. | Yes — `maxCacheItems` |
+| `Dsn` | Gets or sets the Data Source Name of a given project in Sentry. | Yes — `dsn` |
+| `Environment` | Gets or sets the environment the application is running in. | Yes — `environment` |
+| `Distribution` | Gets or sets the distribution of the application, associated with the release set in `SentryOptions.Release`. | Yes — `distribution` |
+| `Release` | Gets or sets the release information for the application. | Yes — `release` |
+| `BeforeSend` | Gets or sets a callback invoked before sending an event to Sentry. | Internal only — the sink registers `SetBeforeSend` for `EventId` handling; not user-pluggable from the extension |
+| `Debug` | Enables SDK debug mode (verbose client logging). | Yes — `debug` |
+| `DiagnosticLevel` | Minimum level for SDK diagnostic log output when `Debug` is enabled. | Yes — `diagnosticLevel` |
+| `TracesSampleRate` | Sample rate for **performance monitoring** (transactions/spans); separate from error `SampleRate`. | Yes — `tracesSampleRate` |
+| `AutoSessionTracking` | Enables automatic session tracking. | Yes — `autoSessionTracking` |
+| `StackTraceMode` | Stack trace capture mode (for example `Original` or `Enhanced`). | Yes — `stackTraceMode` |
 
 ### Methods
-* `AddJsonConverter(JsonConverter converter)`: A method to add a `JsonConverter` to be used when serializing or deserializing objects to JSON with the SDK.
-* `SetBeforeBreadcrumb(Func<Breadcrumb, Breadcrumb?> beforeBreadcrumb)`: A method to set a callback function to be invoked when a breadcrumb is about to be stored.
-* `SetBeforeBreadcrumb(Func<Breadcrumb, Hint, Breadcrumb?> beforeBreadcrumb)`: Another overload of `SetBeforeBreadcrumb` method that accepts a `Hint`.
-* `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)`: A method to configure a callback function to be invoked before sending an event to Sentry.
-* `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)`: Another overload of `SetBeforeSend` method that accepts a `Hint`.
-* `SetBeforeSendTransaction(Func<Transaction, Transaction?> beforeSendTransaction)`: A method to configure a callback to invoke before sending a transaction to Sentry.
-* `SetBeforeSendTransaction(Func<Transaction, Hint, Transaction?> beforeSendTransaction)`: Another overload of `SetBeforeSendTransaction` method that accepts a `Hint`.
+
+| Method | Description | This sink |
+| --- | --- | --- |
+| `AddJsonConverter(JsonConverter converter)` | Adds a `JsonConverter` used when serializing or deserializing JSON in the SDK. | Not exposed |
+| `SetBeforeBreadcrumb(Func<Breadcrumb, Breadcrumb?> beforeBreadcrumb)` | Sets a callback when a breadcrumb is about to be stored. | Not exposed |
+| `SetBeforeBreadcrumb(Func<Breadcrumb, Hint, Breadcrumb?> beforeBreadcrumb)` | Overload of `SetBeforeBreadcrumb` that accepts a `Hint`. | Not exposed |
+| `SetBeforeSend(Func<SentryEvent, SentryEvent?> beforeSend)` | Configures a callback before sending an error event. | Not exposed (reserved; see `BeforeSend` above) |
+| `SetBeforeSend(Func<SentryEvent, Hint, SentryEvent?> beforeSend)` | Overload of `SetBeforeSend` that accepts a `Hint`. | Not exposed |
+| `SetBeforeSendTransaction(Func<Transaction, Transaction?> beforeSendTransaction)` | Configures a callback before sending a transaction. | Not exposed |
+| `SetBeforeSendTransaction(Func<Transaction, Hint, Transaction?> beforeSendTransaction)` | Overload of `SetBeforeSendTransaction` that accepts a `Hint`. | Not exposed |
+
+### Mapping to `WriteTo.Sentry`
+
+These parameters are part of the Serilog configuration API but are not direct `SentryOptions` property names:
+
+| Parameter | Role |
+| --- | --- |
+| `formatProvider` | Culture-specific formatting for rendered log properties. |
+| `restrictedToMinimumLevel` | Minimum Serilog level forwarded to the sink. |
+| `tags` | Comma-separated `key=value` pairs applied on the Sentry scope. |
+| `transactionName`, `operationName` | Used for scope tags and transaction naming in the sink. |
+| `transactionService` | Optional `ITransactionService` for span creation (dependency injection). |
+| `enableTracing` | Accepted by the extension for API compatibility; **not** currently applied to `SentryOptions` in the sink implementation. |
