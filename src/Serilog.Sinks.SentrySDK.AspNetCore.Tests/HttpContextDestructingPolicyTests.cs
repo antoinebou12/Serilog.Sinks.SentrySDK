@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 
 using Serilog.Core;
 using Serilog.Events;

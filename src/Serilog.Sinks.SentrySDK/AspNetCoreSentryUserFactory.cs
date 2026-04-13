@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Sentry;
 
 namespace Serilog.Sinks.SentrySDK
@@ -11,8 +11,8 @@ namespace Serilog.Sinks.SentrySDK
         /// <summary>
         /// Creates a new Sentry user.
         /// </summary>
-        /// <returns>A new <see cref="User"/> instance.</returns>
-        User Create();
+        /// <returns>A new <see cref="SentryUser"/> instance.</returns>
+        SentryUser Create();
     }
 
     /// <summary>
@@ -35,11 +35,11 @@ namespace Serilog.Sinks.SentrySDK
         /// <summary>
         /// Creates a new Sentry user based on data from the HTTP context.
         /// </summary>
-        /// <returns>A new <see cref="User"/> instance.</returns>
-        public User Create()
+        /// <returns>A new <see cref="SentryUser"/> instance.</returns>
+        public SentryUser Create()
         {
             var claimsIdentity = _httpContext.User.Identity as ClaimsIdentity;
-            var sentryUser = new User
+            var sentryUser = new SentryUser
             {
                 IpAddress = _httpContext.RemoteIpAddress,
                 // Suppose you store username and email in claims.

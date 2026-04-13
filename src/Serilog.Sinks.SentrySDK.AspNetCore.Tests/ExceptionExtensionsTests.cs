@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Serilog.Exceptions;
 using Serilog.Sinks.SentrySDK.AspNetCore;

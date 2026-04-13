@@ -18,7 +18,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
         private readonly SentrySink _sentrySink;
         private readonly Mock<ISentrySdkWrapper> _sentrySdkWrapperMock;
         private readonly Mock<IFormatProvider> _formatProviderMock;
-        private readonly Mock<ITransaction> _transactionMock;
+        private readonly Mock<ITransactionTracer> _transactionMock;
         private readonly Mock<ITransactionService> _transactionServiceMock;
         private readonly Mock<ISpan> _spanMock;
 
@@ -26,14 +26,20 @@ namespace Serilog.Sinks.SentrySDK.Tests
         {
             _formatProviderMock = new Mock<IFormatProvider>();
             _transactionServiceMock = new Mock<ITransactionService>();
-            _transactionMock = new Mock<ITransaction>();
+            _transactionMock = new Mock<ITransactionTracer>();
             _spanMock = new Mock<ISpan>();
-            _transactionServiceMock.Setup(s => s.StartChild(It.IsAny<ITransaction>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_spanMock.Object);
+            _transactionServiceMock.Setup(s => s.StartChild(It.IsAny<ITransactionTracer>(), It.IsAny<string>(), It.IsAny<string>())).Returns(_spanMock.Object);
             _sentrySdkWrapperMock = new Mock<ISentrySdkWrapper>();
             _sentrySdkWrapperMock
                         .Setup(sdk => sdk.StartTransaction(It.IsAny<string>(), It.IsAny<string>()))
                         .Returns(_transactionMock.Object);
 
+            _transactionMock.Setup(t => t.Status).Returns((SpanStatus?)null);
+            _spanMock.SetupProperty(s => s.Status);
+            _spanMock.Setup(s => s.SpanId).Returns(default(SpanId));
+            _spanMock.Setup(s => s.Description).Returns(string.Empty);
+            _spanMock.Setup(s => s.Tags).Returns(new Dictionary<string, string>());
+            _spanMock.Setup(s => s.Operation).Returns("test-op");
 
             var sentryOptions = new SentryOptions
             {
@@ -48,7 +54,6 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 DiagnosticLevel = SentryLevel.Warning,
                 SampleRate = 1.0f,
                 AutoSessionTracking = true,
-                EnableTracing = true,
                 TracesSampleRate = 1.0,
                 StackTraceMode = StackTraceMode.Enhanced,
                 ServerName = "test-server",
@@ -75,11 +80,11 @@ namespace Serilog.Sinks.SentrySDK.Tests
                 restrictedToMinimumLevel: LogEventLevel.Verbose.ToString(),
                 transactionName: null,
                 operationName: null,
-                sampleRate: (float) sentryOptions.SampleRate,
+                sampleRate: (float)sentryOptions.SampleRate,
                 autoSessionTracking: true,
                 enableTracing: true,
                 transactionService: _transactionServiceMock.Object,
-                tracesSampleRate: (float) sentryOptions.TracesSampleRate,
+                tracesSampleRate: (float)sentryOptions.TracesSampleRate,
                 stackTraceMode: "Enhanced",
                 isEnvironmentUser: true,
                 shutdownTimeout: 2.0,

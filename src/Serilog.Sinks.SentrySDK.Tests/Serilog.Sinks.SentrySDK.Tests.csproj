@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
         <IsPackable>false</IsPackable>
         <RootNamespace>Ion.Framework.Serilog.Sinks.SentrySDK.Tests</RootNamespace>
         <AssemblyName>Ion.Framework.Serilog.Sinks.SentrySDK.Tests</AssemblyName>
@@ -10,11 +12,11 @@
     <ItemGroup>
         <PackageReference Include="xunit" Version="2.9.2" />
         <PackageReference Include="Moq" Version="4.20.72" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
         <PackageReference Include="coverlet.collector" Version="6.0.4">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

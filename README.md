@@ -39,7 +39,55 @@ Install-Package Serilog.Sinks.SentrySDK
 
 ## Demos
 
-Demos demonstrating how to use this library can be found [here](demos/).
+Demos demonstrating how to use this library can be found [here](demos/) and in [demos/README.md](demos/README.md).
+
+## Build, run tests, and coverage (local development)
+
+**Prerequisites:** [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) or newer (the projects target `net6.0`).
+
+From the repository root:
+
+```bash
+# Restore and build the main library
+dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
+dotnet build src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj -c Release
+
+# Build the ASP.NET Core companion package
+dotnet build src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj -c Release
+
+# Run all unit tests (xUnit)
+dotnet test src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
+dotnet test src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
+```
+
+Run tests with coverage (same approach as CI, using [coverlet](https://github.com/coverlet-coverage/coverlet)):
+
+```bash
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./reports/coverage src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
+```
+
+CI uploads Cobertura to [Codecov](https://codecov.io/gh/antoinebou12/Serilog.Sinks.SentrySDK); keep or improve coverage when you change production code.
+
+### Code formatting (dotnet format)
+
+The repo includes an [`.editorconfig`](.editorconfig) (UTF-8, LF, 4-space indent for C#). CI runs `dotnet format` with `--verify-no-changes` on [`src/Serilog.Sinks.SentrySDK.sln`](src/Serilog.Sinks.SentrySDK.sln).
+
+Apply formatting locally (same as fixing style before a PR):
+
+```bash
+dotnet restore src/Serilog.Sinks.SentrySDK.sln
+dotnet format src/Serilog.Sinks.SentrySDK.sln
+```
+
+Check only (no file writes; fails if the tree does not match the formatter):
+
+```bash
+dotnet format src/Serilog.Sinks.SentrySDK.sln --verify-no-changes
+```
+
+**Configure the sink:** set a valid Sentry **DSN** (from your Sentry project settings) in `appsettings.json` or in code. Demos under `demos/` show JSON and programmatic configuration. Without a DSN, the sink constructor throws when the DSN argument is empty.
+
+**Contributing:** see [CONTRIBUTING.md](CONTRIBUTING.md) (pull requests, issues, style, and tests).
 
 ## Getting Started
 

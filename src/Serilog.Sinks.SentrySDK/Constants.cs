@@ -1,4 +1,4 @@
-﻿namespace Serilog.Sinks.SentrySDK
+namespace Serilog.Sinks.SentrySDK
 {
     /// <summary>
     /// Provides constants for the SentrySink.

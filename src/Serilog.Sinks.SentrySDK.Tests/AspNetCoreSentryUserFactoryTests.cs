@@ -34,7 +34,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
             _httpContextMock.Setup(hc => hc.User.Identity).Returns(_claimsIdentityMock.Object);
 
             // Act
-            User user = _factory.Create();
+            SentryUser user = _factory.Create();
 
             // Assert
             Assert.Equal("127.0.0.1", user.IpAddress);

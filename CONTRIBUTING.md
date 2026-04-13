@@ -1,38 +1,40 @@
-# Contributing to Our Project
+# Contributing to Serilog.Sinks.SentrySDK
 
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+Thank you for helping improve this project. This document describes how we work on GitHub and what we expect in contributions.
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+## How we use GitHub
 
-## We Develop with Github
-We use Github to host code, to track issues and feature requests, as well as accept pull requests.
+- **Code and reviews:** [github.com/antoinebou12/Serilog.Sinks.SentrySDK](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK)
+- **Bugs and ideas:** use [Issues](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/issues). Templates are available for [bug reports](.github/ISSUE_TEMPLATE/bug_report.md) and [feature requests](.github/ISSUE_TEMPLATE/feature_request.md).
+- **Security:** do not open public issues for security problems. See [SECURITY.md](SECURITY.md) for how to report them responsibly.
+- **Workflow:** we follow a typical [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow) model: branch from `main`, open a **pull request**, address review feedback, and merge when CI is green.
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html)
-We use Github Flow, so all code changes happen through pull requests. We actively welcome your pull requests:
+## Pull requests
 
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests. We use NUnit for testing.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes. You can run tests using the `dotnet test` command.
-5. Make sure your code follows the [C# coding conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions).
-6. Issue that pull request!
+1. Fork the repository and create a branch from `main`.
+2. Make focused changes; avoid unrelated refactors in the same PR.
+3. **Add or update tests** when you change behavior or fix bugs. We use **xUnit**, **Moq**, and **FluentAssertions** where applicable.
+4. **Update documentation** (README, XML comments on public API) when user-facing behavior or configuration changes.
+5. Ensure **`dotnet build`** and **`dotnet test`** succeed for the projects you touched (see [README.md](README.md#build-run-tests-and-coverage-local-development)).
+6. Open a PR against `main`. Use the [pull request template](.github/PULL_REQUEST_TEMPLATE/pull_request_template.md) when it helps describe the change.
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+## Tests and coverage
 
-## Report bugs using Github's [issues](https://github.com/briandk/transcriptase-atom/issues)
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/briandk/transcriptase-atom/issues/new); it's that easy!
+- Run tests locally before pushing:
 
-## Use a Consistent Coding Style
-* We follow the [C# coding conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions)
-* Ensure your code is formatted using the `dotnet format` command.
+  ```bash
+  dotnet test src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
+  dotnet test src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
+  ```
+
+- CI runs these tests and uploads coverage to Codecov. Prefer **new tests** for new code paths (e.g. factories, sink behavior, middleware) so coverage does not drop unnecessarily.
+
+## Code style
+
+- Follow [.NET/C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions).
+- Formatting: the repo uses [`.editorconfig`](.editorconfig). Run `dotnet restore src/Serilog.Sinks.SentrySDK.sln` then `dotnet format src/Serilog.Sinks.SentrySDK.sln` before pushing; CI runs `dotnet format --verify-no-changes` (see [README](README.md#code-formatting-dotnet-format)).
+- Keep public API changes backward compatible when possible; document breaking changes in the PR description and release notes.
 
 ## License
-By contributing, you agree that your contributions will be licensed under its MIT License.
 
-## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js)
+By contributing, you agree that your contributions are licensed under the same [MIT License](LICENSE) as the project.

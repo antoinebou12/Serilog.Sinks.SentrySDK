@@ -29,8 +29,8 @@ namespace Serilog.Sinks.SentrySDK.Tests
             // Arrange
             _httpContextMock.Setup(h => h.RequestPath).Returns("/test");
             _httpContextMock.Setup(h => h.RequestMethod).Returns("GET");
-            _httpContextMock.Setup(h => h.RequestHeaders).Returns(new Dictionary<string, string> { {"TestHeader", "TestValue"} });
-            _httpContextMock.Setup(h => h.RequestCookies).Returns(new Dictionary<string, string> { {"TestCookie", "TestValue"} });
+            _httpContextMock.Setup(h => h.RequestHeaders).Returns(new Dictionary<string, string> { { "TestHeader", "TestValue" } });
+            _httpContextMock.Setup(h => h.RequestCookies).Returns(new Dictionary<string, string> { { "TestCookie", "TestValue" } });
             _httpContextMock.Setup(h => h.GetRequestBody()).Returns("RequestBody");
             _httpContextMock.Setup(h => h.RequestQueryString).Returns("?param=value");
 

@@ -1,3 +1,4 @@
+#nullable enable
 using System.Diagnostics;
 using System;
 using Serilog;
@@ -81,7 +82,6 @@ namespace Serilog.Sinks.SentrySDK
                 SampleRate = (float)sampleRate,
                 AttachStacktrace = attachStacktrace,
                 AutoSessionTracking = autoSessionTracking,
-                EnableTracing = enableTracing,
                 TracesSampleRate = (float)tracesSampleRate,
                 StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
                 ServerName = serverName,

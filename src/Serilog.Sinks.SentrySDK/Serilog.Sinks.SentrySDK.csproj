@@ -5,6 +5,7 @@
     <VersionPrefix>1.0.6</VersionPrefix>
     <Authors>Antoine Boucher</Authors>
     <TargetFramework>net6.0</TargetFramework>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Serilog.Sinks.SentrySDK</AssemblyName>
     <PackRelease>true</PackRelease>
