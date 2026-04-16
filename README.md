@@ -17,11 +17,9 @@ Workflows (click a badge to open the run on GitHub Actions):
 NuGet.org all-time downloads (shields.io):
 
 [![Serilog.Sinks.SentrySDK](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg?label=Serilog.Sinks.SentrySDK&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK)
-[![Serilog.Sinks.SentrySDK.AspNetCore](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.svg?label=Serilog.Sinks.SentrySDK.AspNetCore&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore)
 [![Serilog.Sinks.SentrySDK.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.6.svg?label=Serilog.Sinks.SentrySDK.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6)
 [![Serilog.Sinks.SentrySDK.AspNetCore.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.6.svg?label=Serilog.Sinks.SentrySDK.AspNetCore.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6)
 
-All workflow files live under [`.github/workflows`](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/tree/main/.github/workflows).
 
 ## Available Packages
 
