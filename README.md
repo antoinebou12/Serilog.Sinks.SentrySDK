@@ -25,7 +25,7 @@ All workflow files live under [`.github/workflows`](https://github.com/antoinebo
 
 ## Available Packages
 
-NuGet.org listings (this repo’s CI publishes the **non-`.6`** ids; **`.6`** ids are the same product line with an alternate package name on NuGet):
+NuGet.org listings: [CI](.github/workflows/CI.yml) and [`pack.ps1`](pack.ps1) produce **four** `.nupkg` files per release — **`Serilog.Sinks.SentrySDK`** and **`Serilog.Sinks.SentrySDK.AspNetCore`** (each includes `lib/net6.0` and `lib/net10.0`), plus **`Serilog.Sinks.SentrySDK.6`** and **`Serilog.Sinks.SentrySDK.AspNetCore.6`** (alternate ids, **net6.0-only**, `lib/net6.0` only):
 
 | Package | NuGet.org | Version | Downloads |
 | --- | --- | --- | --- |
@@ -36,7 +36,7 @@ NuGet.org listings (this repo’s CI publishes the **non-`.6`** ids; **`.6`** id
 
 **Releases:** [GitHub Releases](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases) (changelog and `.nupkg` assets attached to published releases).
 
-**Release 1.0.7.2** (see `VersionPrefix` in the `.csproj` files): NuGet packages ship **both** `net6.0` and `net10.0` in the same `.nupkg` (`lib/net6.0/`, `lib/net10.0/`). Use a matching GitHub release tag such as **`v1.0.7.2`**. **Publishing to [nuget.org](https://www.nuget.org/)** runs automatically when you **[publish a GitHub Release](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/new)** (see [.github/workflows/CI.yml](.github/workflows/CI.yml): pack, then push with `NUGET_API_KEY`). Manual [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) builds and uploads artifacts only; it does **not** push to NuGet.
+**Release 1.0.7.2** (see `VersionPrefix` in the `.csproj` files): the two main package ids ship **both** `net6.0` and `net10.0` (`lib/net6.0/`, `lib/net10.0/`); the **`.6`** ids ship **net6.0 only**. Use a matching GitHub release tag such as **`v1.0.7.2`**. **Publishing to [nuget.org](https://www.nuget.org/)** runs automatically when you **[publish a GitHub Release](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/new)** (CI packs all four packages, then `dotnet nuget push ./nupkgs/*.nupkg` with `NUGET_API_KEY`). Manual [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) builds and uploads artifacts only; it does **not** push to NuGet.
 
 ## Installation
 
