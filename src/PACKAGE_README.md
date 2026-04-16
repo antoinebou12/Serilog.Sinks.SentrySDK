@@ -9,22 +9,25 @@ A Serilog sink for Sentry that simplifies error and log management. It builds on
 
 ## Release 1.0.7.2 and target frameworks
 
-This line is **1.0.7.2** on NuGet; align GitHub releases with the same version (for example tag **`v1.0.7.2`**). **`Serilog.Sinks.SentrySDK`** and **`Serilog.Sinks.SentrySDK.AspNetCore`** ship **net6.0** and **net10.0** (`lib/net6.0/`, `lib/net10.0/`). **`Serilog.Sinks.SentrySDK.6`** and **`Serilog.Sinks.SentrySDK.AspNetCore.6`** are **net6.0-only** (`lib/net6.0/` only).
+This line is **1.0.7.2** on NuGet; align GitHub releases with the same version (for example tag **`v1.0.7.2`**). **`Serilog.Sinks.SentrySDK`** and **`Serilog.Sinks.SentrySDK.AspNetCore`** ship **net6.0** and **net10.0** (`lib/net6.0/`, `lib/net10.0/`). **`Serilog.Sinks.SentrySDK.6`** / **`Serilog.Sinks.SentrySDK.AspNetCore.6`** are **net6.0-only**; **`Serilog.Sinks.SentrySDK.10`** / **`Serilog.Sinks.SentrySDK.AspNetCore.10`** are **net10.0-only**.
 
 ## Packages
 
 - **Serilog.Sinks.SentrySDK** — core sink and configuration helpers (net6 + net10).
 - **Serilog.Sinks.SentrySDK.AspNetCore** — ASP.NET Core middleware and HTTP context integration (net6 + net10).
-- **Serilog.Sinks.SentrySDK.6** / **Serilog.Sinks.SentrySDK.AspNetCore.6** — same product line, alternate NuGet ids, **net6.0-only**.
+- **Serilog.Sinks.SentrySDK.6** / **Serilog.Sinks.SentrySDK.AspNetCore.6** — alternate ids, **net6.0-only**.
+- **Serilog.Sinks.SentrySDK.10** / **Serilog.Sinks.SentrySDK.AspNetCore.10** — alternate ids, **net10.0-only**.
 
 Install from NuGet:
 
 ```bash
 dotnet add package Serilog.Sinks.SentrySDK
 dotnet add package Serilog.Sinks.SentrySDK.AspNetCore
-# net6.0-only package ids:
+# net6.0-only / net10.0-only package ids:
 dotnet add package Serilog.Sinks.SentrySDK.6
 dotnet add package Serilog.Sinks.SentrySDK.AspNetCore.6
+dotnet add package Serilog.Sinks.SentrySDK.10
+dotnet add package Serilog.Sinks.SentrySDK.AspNetCore.10
 ```
 
 ## Documentation

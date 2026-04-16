@@ -19,25 +19,33 @@ NuGet.org all-time downloads (shields.io):
 [![Serilog.Sinks.SentrySDK](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg?label=Serilog.Sinks.SentrySDK&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK)
 [![Serilog.Sinks.SentrySDK.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.6.svg?label=Serilog.Sinks.SentrySDK.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6)
 [![Serilog.Sinks.SentrySDK.AspNetCore.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.6.svg?label=Serilog.Sinks.SentrySDK.AspNetCore.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6)
+[![Serilog.Sinks.SentrySDK.10](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.10.svg?label=Serilog.Sinks.SentrySDK.10&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.10)
+[![Serilog.Sinks.SentrySDK.AspNetCore.10](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.10.svg?label=Serilog.Sinks.SentrySDK.AspNetCore.10&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.10)
 
 
 ## Available Packages
 
-NuGet.org listings: [CI](.github/workflows/CI.yml) and [`pack.ps1`](pack.ps1) produce **four** `.nupkg` files per release — **`Serilog.Sinks.SentrySDK`** and **`Serilog.Sinks.SentrySDK.AspNetCore`** (each includes `lib/net6.0` and `lib/net10.0`), plus **`Serilog.Sinks.SentrySDK.6`** and **`Serilog.Sinks.SentrySDK.AspNetCore.6`** (alternate ids, **net6.0-only**, `lib/net6.0` only):
+NuGet.org listings: [CI](.github/workflows/CI.yml) and [`pack.ps1`](pack.ps1) produce **six** `.nupkg` files per release — **`Serilog.Sinks.SentrySDK`** and **`Serilog.Sinks.SentrySDK.AspNetCore`** (each includes `lib/net6.0` and `lib/net10.0`), plus **`Serilog.Sinks.SentrySDK.6`** / **`Serilog.Sinks.SentrySDK.AspNetCore.6`** (**net6.0-only**) and **`Serilog.Sinks.SentrySDK.10`** / **`Serilog.Sinks.SentrySDK.AspNetCore.10`** (**net10.0-only**):
 
 | Package | NuGet.org | Version | Downloads |
 | --- | --- | --- | --- |
 | Serilog.Sinks.SentrySDK | [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) |
 | Serilog.Sinks.SentrySDK.6 | [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) |
 | Serilog.Sinks.SentrySDK.AspNetCore.6 | [Serilog.Sinks.SentrySDK.AspNetCore.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) |
+| Serilog.Sinks.SentrySDK.10 | [Serilog.Sinks.SentrySDK.10](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.10) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.10.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.10) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.10.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.10) |
+| Serilog.Sinks.SentrySDK.AspNetCore.10 | [Serilog.Sinks.SentrySDK.AspNetCore.10](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.10) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.10.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.10) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.10.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.10) |
 
 **Releases:** [GitHub Releases](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases) (changelog and `.nupkg` assets attached to published releases).
 
-**Release 1.0.7.2** (see `VersionPrefix` in the `.csproj` files): the two main package ids ship **both** `net6.0` and `net10.0` (`lib/net6.0/`, `lib/net10.0/`); the **`.6`** ids ship **net6.0 only**. Use a matching GitHub release tag such as **`v1.0.7.2`**. **Publishing to [nuget.org](https://www.nuget.org/)** runs automatically when you **[publish a GitHub Release](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/new)** (CI packs all four packages, then `dotnet nuget push ./nupkgs/*.nupkg` with `NUGET_API_KEY`). Manual [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) builds and uploads artifacts only; it does **not** push to NuGet.
+**Release 1.0.7.2** (see `VersionPrefix` in the `.csproj` files): the two main package ids ship **both** `net6.0` and `net10.0` (`lib/net6.0/`, `lib/net10.0/`); the **`.6`** ids ship **net6.0 only**; the **`.10`** ids ship **net10.0 only**. Use a matching GitHub release tag such as **`v1.0.7.2`**.
+
+**Publishing to [nuget.org](https://www.nuget.org/)** happens automatically when you **[publish a GitHub Release](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/new)**: [.NET Core CI](.github/workflows/CI.yml) packs **all six** packages (main, **`.6`**, and **`.10`**), then pushes them with `NUGET_API_KEY`. A manual [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) on that same workflow only builds and uploads CI artifacts; it does **not** push to NuGet.
+
+**Optional manual deploy:** [Publish NuGet (.6 and .10 lines)](.github/workflows/publish-nuget-net6.yml) is **workflow_dispatch only** (never runs on release). Use it if you need to republish **only** the alternate **`.6`** / **`.10`** package ids without cutting a full GitHub release.
 
 ## Installation
 
-The library is available on NuGet as [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) (or [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) if you prefer that package id).
+The library is available on NuGet as [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK), or alternate ids [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) / [Serilog.Sinks.SentrySDK.10](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.10) if you want a single target framework per package.
 
 You can install it with the following command:
 

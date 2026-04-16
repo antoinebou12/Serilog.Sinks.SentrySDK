@@ -1,0 +1,68 @@
+# Optional manual-only publish: TFM-specific ids .6 and .10 (not triggered by GitHub releases).
+# Release publishing of all packages (including these ids) is handled in CI.yml on release: published.
+# Each line embeds PACKAGE_README_NET6.md or PACKAGE_README_NET10.md as the NuGet readme.
+name: Publish NuGet (.6 and .10 lines)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-alternate-tfm-packages:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suffix: ['6', '10']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            6.0.x
+            10.0.x
+
+      - name: Restore, build, and test
+        run: |
+          dotnet restore src/Serilog.Sinks.SentrySDK.sln
+          dotnet build src/Serilog.Sinks.SentrySDK.sln --configuration Release --no-restore
+          dotnet test src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj --configuration Release --no-build --verbosity normal
+          dotnet test src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Pack Serilog.Sinks.SentrySDK.${{ matrix.suffix }} and Serilog.Sinks.SentrySDK.AspNetCore.${{ matrix.suffix }}
+        run: |
+          mkdir -p "./nupkgs-tfm-${{ matrix.suffix }}"
+          dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output "./nupkgs-tfm-${{ matrix.suffix }}" -p:AlternateNuGetSuffix=${{ matrix.suffix }}
+          dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output "./nupkgs-tfm-${{ matrix.suffix }}" -p:AlternateNuGetSuffix=${{ matrix.suffix }}
+
+      - name: List packages
+        run: ls -la "./nupkgs-tfm-${{ matrix.suffix }}"
+
+      - name: Push to NuGet.org (suffix ${{ matrix.suffix }})
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          out="./nupkgs-tfm-${{ matrix.suffix }}"
+          core_pkgs=("$out"/Serilog.Sinks.SentrySDK.${{ matrix.suffix }}.*.nupkg)
+          asp_pkgs=("$out"/Serilog.Sinks.SentrySDK.AspNetCore.${{ matrix.suffix }}.*.nupkg)
+          if [ "${#core_pkgs[@]}" -eq 0 ] || [ ! -f "${core_pkgs[0]}" ]; then
+            echo "Expected $out/Serilog.Sinks.SentrySDK.${{ matrix.suffix }}.*.nupkg"
+            exit 1
+          fi
+          if [ "${#asp_pkgs[@]}" -eq 0 ] || [ ! -f "${asp_pkgs[0]}" ]; then
+            echo "Expected $out/Serilog.Sinks.SentrySDK.AspNetCore.${{ matrix.suffix }}.*.nupkg"
+            exit 1
+          fi
+          for f in "${core_pkgs[@]}"; do
+            dotnet nuget push "$f" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done
+          for f in "${asp_pkgs[@]}"; do
+            dotnet nuget push "$f" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done

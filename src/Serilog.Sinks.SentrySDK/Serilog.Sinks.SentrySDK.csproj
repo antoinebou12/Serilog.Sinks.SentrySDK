@@ -23,17 +23,31 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <!-- Alternate NuGet id: net6.0-only line (pack with -p:AlternateNuGetSuffix=6). Global property propagates to ProjectReferences. -->
+  <!-- Alternate NuGet ids (pack with -p:AlternateNuGetSuffix=6|10). Global property propagates to ProjectReferences. -->
   <PropertyGroup Condition="'$(AlternateNuGetSuffix)' == '6'">
     <PackageId>Serilog.Sinks.SentrySDK.6</PackageId>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <Description>A Sentry sink for Serilog (v$(VersionPrefix)). Package id Serilog.Sinks.SentrySDK.6: net6.0-only (lib/net6.0). For net6.0 and net10.0, use Serilog.Sinks.SentrySDK.</Description>
     <PackageReleaseNotes>$(VersionPrefix) (Serilog.Sinks.SentrySDK.6): net6.0 only. Release notes: https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(AlternateNuGetSuffix)' == '10'">
+    <PackageId>Serilog.Sinks.SentrySDK.10</PackageId>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <Description>A Sentry sink for Serilog (v$(VersionPrefix)). Package id Serilog.Sinks.SentrySDK.10: net10.0-only (lib/net10.0). For net6.0 and net10.0, use Serilog.Sinks.SentrySDK.</Description>
+    <PackageReleaseNotes>$(VersionPrefix) (Serilog.Sinks.SentrySDK.10): net10.0 only. Release notes: https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\assets\serilog-sink-nuget.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(AlternateNuGetSuffix)' != '6' And '$(AlternateNuGetSuffix)' != '10'">
     <None Include="..\PACKAGE_README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(AlternateNuGetSuffix)' == '6'">
+    <None Include="..\PACKAGE_README_NET6.md" Pack="true" PackagePath="\PACKAGE_README.md" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(AlternateNuGetSuffix)' == '10'">
+    <None Include="..\PACKAGE_README_NET10.md" Pack="true" PackagePath="\PACKAGE_README.md" />
   </ItemGroup>
 
   <ItemGroup>

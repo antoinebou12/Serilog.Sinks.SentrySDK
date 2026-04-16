@@ -73,6 +73,10 @@ jobs:
       run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs -p:AlternateNuGetSuffix=6
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore.6 (net6 only)
       run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output ./nupkgs -p:AlternateNuGetSuffix=6
+    - name: Pack Serilog.Sinks.SentrySDK.10 (net10 only)
+      run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs -p:AlternateNuGetSuffix=10
+    - name: Pack Serilog.Sinks.SentrySDK.AspNetCore.10 (net10 only)
+      run: dotnet pack src/Serilog.Sinks.SentrySDK.AspNetCore/Serilog.Sinks.SentrySDK.AspNetCore.csproj --configuration Release --output ./nupkgs -p:AlternateNuGetSuffix=10
     - name: Check nupkgs directory
       run: |
         ls ./nupkgs
@@ -99,7 +103,7 @@ jobs:
         with:
           name: nuget-packages
           path: ./nupkgs
-      - name: Push all NuGet packages (main + .6 net6-only line)
+      - name: Push all NuGet packages (main, .6 net6-only, .10 net10-only)
         run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: Upload packages to GitHub Release
         if: github.event_name == 'release'
