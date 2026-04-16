@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore
         /// <summary>
         /// Gets the remote IP address.
         /// </summary>
-        public string RemoteIpAddress => _httpContext.Connection.RemoteIpAddress.ToString();
+        public string RemoteIpAddress => _httpContext.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
 
         /// <summary>
         /// Gets the request cookies.

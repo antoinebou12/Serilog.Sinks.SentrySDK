@@ -7,6 +7,9 @@ using Sentry;
 
 namespace Serilog.Sinks.SentrySDK
 {
+    /// <summary>
+    /// Extension methods for registering the Sentry SDK Serilog sink.
+    /// </summary>
     public static class SentrySinkExtensions
     {
         /// <summary>

@@ -105,7 +105,7 @@ namespace Serilog.Sinks.SentrySDK
     /// </summary>
     public class SentrySink : ILogEventSink, IDisposable
     {
-        private readonly IFormatProvider _formatProvider;
+        private readonly IFormatProvider? _formatProvider;
         private readonly string[] _tags;
         private readonly SentryOptions _options;
         private readonly IDisposable? _sentry;
@@ -113,66 +113,66 @@ namespace Serilog.Sinks.SentrySDK
         private readonly string _operationName;
         private readonly ISentrySdkWrapper _sentrySdkWrapper;
         private readonly ITransactionService _transactionService;
-        private readonly string _restrictedToMinimumLevel;
+        private readonly string? _restrictedToMinimumLevel;
         private readonly bool _enableTracing;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SentrySink"/> class.
         /// </summary>
-        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="formatProvider">The format provider, or null for default formatting.</param>
         /// <param name="sentrySdkWrapper"> sentry sdk wrapper</param>
         /// <param name="dsn"> sentry dsn</param>
-        /// <param name="tags">The tags</param>
+        /// <param name="tags">The tags, or null.</param>
         /// <param name="sendDefaultPii"> send default pii</param>
         /// <param name="maxBreadcrumbs"> max breadcrumbs</param>
         /// <param name="maxQueueItems"> max queue items</param>
         /// <param name="debug"> debug</param>
         /// <param name="diagnosticLevel"> diagnostic level</param>
-        /// <param name="environment"> environment</param>
-        /// <param name="serverName"> server name</param>
-        /// <param name="release"> release</param>
-        /// <param name="restrictedToMinimumLevel"> restricted to minimum level</param>
-        /// <param name="transactionName"> transaction name</param>
-        /// <param name="operationName"> operation name</param>
+        /// <param name="environment"> environment, or null.</param>
+        /// <param name="serverName"> server name, or null.</param>
+        /// <param name="release"> release, or null.</param>
+        /// <param name="restrictedToMinimumLevel"> restricted to minimum level, or null.</param>
+        /// <param name="transactionName"> transaction name, or null.</param>
+        /// <param name="operationName"> operation name, or null.</param>
         /// <param name="sampleRate"> sample rate</param>
         /// <param name="attachStacktrace"> attach stacktrace</param>
         /// <param name="autoSessionTracking"> auto session tracking</param>
         /// <param name="enableTracing"> enable tracing</param>
-        /// <param name="transactionService"> transaction service</param>
+        /// <param name="transactionService"> transaction service, or null to use <see cref="TransactionService"/>.</param>
         /// <param name="tracesSampleRate"> traces sample rate</param>
         /// <param name="stackTraceMode"> stack trace mode</param>
         /// <param name="isEnvironmentUser"> is environment user</param>
         /// <param name="shutdownTimeout"> shutdown timeout</param>
         /// <param name="maxCacheItems"> max cache items</param>
-        /// <param name="distribution"> distribution</param>
+        /// <param name="distribution"> distribution, or null.</param>
         /// <param name="configureSentryOptions">Optional callback for advanced <see cref="SentryOptions"/> (for example metrics, structured logs). Invoked before <c>SetBeforeSend</c>; avoid calling <c>SetBeforeSend</c> here because the sink registers a chained callback—use <paramref name="beforeSend"/> instead.</param>
         /// <param name="beforeSend">Optional callback after the sink's EventId mapping. Return <c>null</c> to discard the event.</param>
         public SentrySink(
-            IFormatProvider formatProvider,
+            IFormatProvider? formatProvider,
             ISentrySdkWrapper sentrySdkWrapper,
             string dsn,
-            string tags,
+            string? tags,
             bool sendDefaultPii,
             int maxBreadcrumbs,
             int maxQueueItems,
             bool debug,
             string diagnosticLevel,
-            string environment,
-            string serverName,
-            string release,
-            string restrictedToMinimumLevel,
-            string transactionName,
-            string operationName,
+            string? environment,
+            string? serverName,
+            string? release,
+            string? restrictedToMinimumLevel,
+            string? transactionName,
+            string? operationName,
             float sampleRate,
             bool attachStacktrace,
             bool autoSessionTracking,
             bool enableTracing,
-            ITransactionService transactionService,
+            ITransactionService? transactionService,
             double tracesSampleRate, string stackTraceMode,
             bool isEnvironmentUser,
             double shutdownTimeout,
             int maxCacheItems,
-            string distribution,
+            string? distribution,
             Action<SentryOptions>? configureSentryOptions = null,
             Func<SentryEvent, SentryHint, SentryEvent?>? beforeSend = null
         )
@@ -180,8 +180,8 @@ namespace Serilog.Sinks.SentrySDK
             _formatProvider = formatProvider;
             _sentrySdkWrapper = sentrySdkWrapper;
             _tags = string.IsNullOrWhiteSpace(tags) ? new string[0] : tags.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
-            _transactionName = transactionName;
-            _operationName = operationName;
+            _transactionName = transactionName ?? string.Empty;
+            _operationName = operationName ?? string.Empty;
             _restrictedToMinimumLevel = restrictedToMinimumLevel;
             if (string.IsNullOrWhiteSpace(dsn))
             {
@@ -217,9 +217,13 @@ namespace Serilog.Sinks.SentrySDK
                 StackTraceMode = Enum.Parse<StackTraceMode>(stackTraceMode, true),
                 IsEnvironmentUser = isEnvironmentUser,
                 ShutdownTimeout = TimeSpan.FromSeconds(shutdownTimeout),
-                MaxCacheItems = (int)(maxCacheItems == 0 ? (int?)null : maxCacheItems),
                 Distribution = distribution,
             };
+            if (maxCacheItems > 0)
+            {
+                _options.MaxCacheItems = maxCacheItems;
+            }
+
             configureSentryOptions?.Invoke(_options);
             if (!enableTracing)
             {
@@ -229,23 +233,29 @@ namespace Serilog.Sinks.SentrySDK
             _options.SetBeforeSend((sentryEvent, hint) =>
             {
                 SentryEvent? processed = sentryEvent;
-                if (processed?.Exception != null && processed.Exception.Data.Contains("EventId"))
+                var exception = processed?.Exception;
+                if (exception != null && exception.Data.Contains("EventId"))
                 {
-                    var newEvent = new SentryEvent(processed.Exception)
+                    var newEvent = new SentryEvent(exception)
                     {
-                        Level = processed.Level // Also copy the Level from the original event
+                        Level = processed!.Level // Also copy the Level from the original event
                     };
 
-                    foreach (DictionaryEntry entry in processed.Exception.Data)
+                    foreach (DictionaryEntry entry in exception.Data)
                     {
-                        var key = entry.Key.ToString();
+                        var key = entry.Key?.ToString();
+                        if (string.IsNullOrEmpty(key))
+                        {
+                            continue;
+                        }
+
                         if (key == "EventId")
                         {
-                            newEvent.SetExtra(key, processed.Exception.Data["EventId"].ToString());
+                            newEvent.SetExtra(key, exception.Data["EventId"]?.ToString() ?? string.Empty);
                         }
                         else
                         {
-                            newEvent.SetExtra(key, entry.Value.ToString());
+                            newEvent.SetExtra(key, entry.Value?.ToString() ?? string.Empty);
                         }
                     }
                     processed = newEvent;
@@ -253,7 +263,7 @@ namespace Serilog.Sinks.SentrySDK
 
                 if (beforeSend != null)
                 {
-                    return beforeSend(processed, hint);
+                    return processed is null ? null : beforeSend(processed, hint);
                 }
 
                 return processed;
@@ -341,10 +351,11 @@ namespace Serilog.Sinks.SentrySDK
                         scope.Transaction = transaction;
                         scope.Level = level;
                         scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
-                            .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
+                            .ToDictionary(pair => pair.Key, pair => (object?)(Render(pair.Value, _formatProvider) ?? string.Empty)));
                         scope.SetTags(
-                            logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
-                                .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
+                            RenderPropertyValuesToStringDictionary(
+                                logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key)),
+                                _formatProvider));
 
                         if (_tags.Length > 0)
                         {
@@ -359,9 +370,9 @@ namespace Serilog.Sinks.SentrySDK
 
                         scope.SetExtras(logEvent.MessageTemplate.Tokens
                             .OfType<PropertyToken>()
-                            .Select(pt => new KeyValuePair<string, object>(pt.PropertyName, logEvent.Properties[pt.PropertyName]))
+                            .Select(pt => new KeyValuePair<string, object?>(pt.PropertyName, logEvent.Properties[pt.PropertyName]))
                             .Where(pair => _tags.All(t => t != pair.Key))
-                            .ToDictionary(pair => pair.Key, pair => (object?)pair.Value));
+                            .ToDictionary(pair => pair.Key, pair => pair.Value));
 
                         var span = _transactionService.StartChild(
                             transaction: transaction,
@@ -374,7 +385,7 @@ namespace Serilog.Sinks.SentrySDK
                             new Breadcrumb(
                                 message: logEvent.MessageTemplate.Text,
                                 type: "log",
-                                data: logEvent.Properties.ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)),
+                                data: RenderPropertyValuesToStringDictionary(logEvent.Properties, _formatProvider),
                                 category: logEvent.Level.ToString(),
                                 level: GetBreadcrumbLevel(logEvent)
                             )
@@ -390,7 +401,7 @@ namespace Serilog.Sinks.SentrySDK
                                     new Breadcrumb(
                                         message: logEvent.MessageTemplate.Text,
                                         type: "log",
-                                        data: (IReadOnlyDictionary<string, string>?)logEvent.Properties.ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)),
+                                        data: RenderPropertyValuesToStringDictionary(logEvent.Properties, _formatProvider),
                                         category: logEvent.Level.ToString(),
                                         level: GetBreadcrumbLevel(logEvent)
                                     )
@@ -406,7 +417,7 @@ namespace Serilog.Sinks.SentrySDK
                                     new Breadcrumb(
                                         message: logEvent.Exception.Message,
                                         type: "exception",
-                                        data: (IReadOnlyDictionary<string, string>?)logEvent.Exception.Data.Cast<DictionaryEntry>().ToDictionary(pair => pair.Key.ToString(), pair => pair.Value.ToString()),
+                                        data: ExceptionDataToStringDictionary(logEvent.Exception.Data),
                                         category: logEvent.Level.ToString(),
                                         level: GetBreadcrumbLevel(logEvent)
                                     )
@@ -423,9 +434,9 @@ namespace Serilog.Sinks.SentrySDK
                         {
                             scope.AddBreadcrumb(
                                 new Breadcrumb(
-                                    message: span.Description,
+                                    message: span.Description ?? string.Empty,
                                     type: "span",
-                                    data: span.Tags,
+                                    data: SpanTagsToStringDictionary(span.Tags),
                                     category: span.Operation,
                                     level: BreadcrumbLevel.Info
                                 )
@@ -459,10 +470,11 @@ namespace Serilog.Sinks.SentrySDK
                 {
                     scope.Level = level;
                     scope.SetExtras(logEvent.Properties.Where(pair => _tags.All(t => t != pair.Key))
-                        .ToDictionary(pair => pair.Key, pair => (object)Render(pair.Value, _formatProvider)));
+                        .ToDictionary(pair => pair.Key, pair => (object?)(Render(pair.Value, _formatProvider) ?? string.Empty)));
                     scope.SetTags(
-                        logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key))
-                            .ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)));
+                        RenderPropertyValuesToStringDictionary(
+                            logEvent.Properties.Where(pair => _tags.Any(t => t == pair.Key)),
+                            _formatProvider));
 
                     if (_tags.Length > 0)
                     {
@@ -476,15 +488,15 @@ namespace Serilog.Sinks.SentrySDK
 
                     scope.SetExtras(logEvent.MessageTemplate.Tokens
                         .OfType<PropertyToken>()
-                        .Select(pt => new KeyValuePair<string, object>(pt.PropertyName, logEvent.Properties[pt.PropertyName]))
+                        .Select(pt => new KeyValuePair<string, object?>(pt.PropertyName, logEvent.Properties[pt.PropertyName]))
                         .Where(pair => _tags.All(t => t != pair.Key))
-                        .ToDictionary(pair => pair.Key, pair => (object?)pair.Value));
+                        .ToDictionary(pair => pair.Key, pair => pair.Value));
 
                     scope.AddBreadcrumb(
                         new Breadcrumb(
                             message: logEvent.MessageTemplate.Text,
                             type: "log",
-                            data: logEvent.Properties.ToDictionary(pair => pair.Key, pair => Render(pair.Value, _formatProvider)),
+                            data: RenderPropertyValuesToStringDictionary(logEvent.Properties, _formatProvider),
                             category: logEvent.Level.ToString(),
                             level: GetBreadcrumbLevel(logEvent)
                         ));
@@ -550,13 +562,59 @@ namespace Serilog.Sinks.SentrySDK
             };
         }
 
+        static Dictionary<string, string> RenderPropertyValuesToStringDictionary(
+            IEnumerable<KeyValuePair<string, LogEventPropertyValue>> pairs,
+            IFormatProvider? formatProvider)
+        {
+            var dictionary = new Dictionary<string, string>();
+            foreach (var pair in pairs)
+            {
+                dictionary[pair.Key] = Render(pair.Value, formatProvider) ?? string.Empty;
+            }
+
+            return dictionary;
+        }
+
+        static Dictionary<string, string> ExceptionDataToStringDictionary(IDictionary data)
+        {
+            var dictionary = new Dictionary<string, string>();
+            foreach (DictionaryEntry entry in data)
+            {
+                var key = entry.Key?.ToString();
+                if (string.IsNullOrEmpty(key))
+                {
+                    continue;
+                }
+
+                dictionary[key] = entry.Value?.ToString() ?? string.Empty;
+            }
+
+            return dictionary;
+        }
+
+        static Dictionary<string, string> SpanTagsToStringDictionary(IReadOnlyDictionary<string, string>? tags)
+        {
+            var dictionary = new Dictionary<string, string>();
+            if (tags == null)
+            {
+                return dictionary;
+            }
+
+            foreach (var pair in tags)
+            {
+                dictionary[pair.Key] = pair.Value ?? string.Empty;
+            }
+
+            return dictionary;
+        }
+
         /// <summary>
         /// Renders the log event property value as a string.
         /// </summary>
         /// <param name="logEventPropertyValue">The log event property value.</param>
-        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="formatProvider">The format provider, or null.</param>
         /// <returns>A string representation of the log event property value.</returns>
-        static string? Render(LogEventPropertyValue logEventPropertyValue, IFormatProvider formatProvider)
+        static string? Render(LogEventPropertyValue logEventPropertyValue, IFormatProvider? formatProvider)
         {
             if (logEventPropertyValue is ScalarValue scalarValue && scalarValue.Value is string stringValue)
             {
@@ -576,13 +634,4 @@ namespace Serilog.Sinks.SentrySDK
         }
 
     }
-
-    /// <summary>
-    /// Provides extension methods to integrate Sentry with Serilog.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// To use the Sentry sink, first install the <c>Serilog.Sinks.SentrySDK</c> package from NuGet.
-    /// </para>
-    /// </remarks>
 }

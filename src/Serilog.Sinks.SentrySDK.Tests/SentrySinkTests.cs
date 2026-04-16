@@ -147,13 +147,8 @@ namespace Serilog.Sinks.SentrySDK.Tests
         [Fact]
         public void Emit_ShouldNotThrowException_WhenLogEventIsNull()
         {
-            // Arrange
-            LogEvent nullLogEvent = null;
+            var ex = Record.Exception(() => _sentrySink.Emit(null!));
 
-            // Act
-            var ex = Record.Exception(() => _sentrySink.Emit(nullLogEvent));
-
-            // Assert
             Assert.Null(ex);
         }
 
@@ -213,8 +208,8 @@ namespace Serilog.Sinks.SentrySDK.Tests
 
             Assert.NotNull(result);
             Assert.NotNull(result!.Exception);
-            Assert.Equal("evt-99", result.Extra["EventId"].ToString());
-            Assert.Equal("keep", result.Extra["Other"].ToString());
+            Assert.Equal("evt-99", result.Extra["EventId"]?.ToString());
+            Assert.Equal("keep", result.Extra["Other"]?.ToString());
         }
 
         [Fact]
@@ -234,7 +229,7 @@ namespace Serilog.Sinks.SentrySDK.Tests
             InvokeBeforeSendInternal(sink, incoming, new SentryHint());
 
             Assert.NotNull(seen);
-            Assert.Equal("1", seen!.Extra["EventId"].ToString());
+            Assert.Equal("1", seen!.Extra["EventId"]?.ToString());
         }
 
         [Fact]

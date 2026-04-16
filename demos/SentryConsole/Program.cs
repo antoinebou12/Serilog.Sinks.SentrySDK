@@ -3,8 +3,10 @@ using System.IO;
 
 using Microsoft.Extensions.Configuration;
 
+using Sentry;
+
 using Serilog;
-using Serilog.Events;
+using Serilog.Context;
 using Serilog.Sinks.SentrySDK;
 using Serilog.Exceptions;
 
@@ -17,34 +19,63 @@ namespace SentryConsole
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
-            Log.Logger = new LoggerConfiguration()
+            var dsn = configuration["Sentry:Dsn"]
+                ?? Environment.GetEnvironmentVariable("SENTRY_DSN");
+
+            var loggerConfiguration = new LoggerConfiguration()
                 .Enrich.WithExceptionDetails()
                 .Enrich.FromLogContext()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
+                .ReadFrom.Configuration(configuration);
+
+            if (string.IsNullOrWhiteSpace(dsn))
+            {
+                Console.WriteLine("No Sentry DSN: set Sentry:Dsn in appsettings.json or SENTRY_DSN. Console and file sinks still run.");
+            }
+            else
+            {
+                // JSON cannot pass delegates; use configureSentryOptions / beforeSend in code (see README).
+                loggerConfiguration.WriteTo.Sentry(
+                    dsn: dsn,
+                    environment: configuration["Sentry:Environment"],
+                    serverName: "SentryConsole",
+                    release: configuration["Sentry:Release"],
+                    distribution: "SentryConsole",
+                    tags: "app=SentryConsole",
+                    operationName: "SentryConsole",
+                    diagnosticLevel: "Error",
+                    enableTracing: true,
+                    tracesSampleRate: 1.0,
+                    maxCacheItems: 100,
+                    configureSentryOptions: options =>
+                    {
+                        options.EnableLogs = true;
+                        options.EnableMetrics = true;
+                    },
+                    beforeSend: (sentryEvent, _) =>
+                    {
+                        sentryEvent.SetTag("demo", "SentryConsole");
+                        return sentryEvent;
+                    });
+            }
+
+            Log.Logger = loggerConfiguration.CreateLogger();
 
             try
             {
-                // Explicitly call our error logger
-                var errorLog = "Intentional error logged at " + DateTime.Now.ToLongTimeString();
-                Log.Error(errorLog);
+                using (LogContext.PushProperty("DemoRunId", Guid.NewGuid().ToString("N")))
+                {
+                    var stamp = DateTime.Now.ToLongTimeString();
+                    Log.Error("Intentional error logged at {Stamp}", stamp);
+                    Log.Warning("Intentional warning logged at {Stamp}", stamp);
+                    Log.Information("Intentional info logged at {Stamp}", stamp);
+                    Log.Debug("Intentional debug logged at {Stamp}", stamp);
+                    Log.Verbose("Intentional trace logged at {Stamp}", stamp);
 
-                var warningLog = "Intentional warning logged at " + DateTime.Now.ToLongTimeString();
-                Log.Warning(errorLog);
-
-                var infoLog = "Intentional info logged at " + DateTime.Now.ToLongTimeString();
-                Log.Information(errorLog);
-
-                var debugLog = "Intentional debug logged at " + DateTime.Now.ToLongTimeString();
-                Log.Debug(errorLog);
-
-                var traceLog = "Intentional trace logged at " + DateTime.Now.ToLongTimeString();
-                Log.Verbose(errorLog);
-
-                // Trigger an exception
-                ConvertToIntSecondTier();
+                    ThrowParseExceptionSecondTier();
+                }
             }
             catch (Exception ex)
             {
@@ -53,8 +84,7 @@ namespace SentryConsole
 
             try
             {
-                // Trigger another exception
-                DivByZeroSecondTier();
+                ThrowDivideByZeroSecondTier();
             }
             catch (Exception ex)
             {
@@ -66,46 +96,22 @@ namespace SentryConsole
             Console.WriteLine("Finished");
         }
 
-        static int DivByZeroSecondTier()
-        {
-            var i = DivByZero();
-            return i;
-        }
+        static int ThrowDivideByZeroSecondTier() => DivByZero();
 
         static int DivByZero()
         {
             var i = 0;
-
-            if (i == 0)
-            {
-                // Handle the error, maybe by returning a default value or logging the error
-                Log.Error("Attempted division by zero");
-                return 0;
-            }
-
             var j = 1 / i;
             return j;
         }
 
-        static int ConvertToIntSecondTier()
-        {
-            var i = ConvertToInt();
-            return i;
-        }
+        static int ThrowParseExceptionSecondTier() => ConvertToInt();
 
         static int ConvertToInt()
         {
             var s = "hello world";
-
-            if (!int.TryParse(s, out int result))
-            {
-                // Handle the error, maybe by returning a default value or logging the error
-                Log.Error("Failed to convert string to integer");
-                return 0;
-            }
-
-            return result;
+            _ = int.Parse(s);
+            return 0;
         }
-
     }
 }
