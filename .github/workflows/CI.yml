@@ -65,7 +65,7 @@ jobs:
       run: |
         ls ./nupkgs
     - name: Upload NuGet packages
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
@@ -80,7 +80,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Download NuGet packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: nuget-packages
           path: ./nupkgs
