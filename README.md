@@ -22,9 +22,7 @@ NuGet.org listings (this repo’s CI publishes the **non-`.6`** ids; **`.6`** id
 
 | Package | NuGet.org | Version |
 | --- | --- | --- |
-| Serilog.Sinks.SentrySDK | [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) |
 | Serilog.Sinks.SentrySDK.6 | [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) |
-| Serilog.Sinks.SentrySDK.AspNetCore | [Serilog.Sinks.SentrySDK.AspNetCore](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore) |
 | Serilog.Sinks.SentrySDK.AspNetCore.6 | [Serilog.Sinks.SentrySDK.AspNetCore.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) |
 
 **Releases:** [GitHub Releases](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases) (changelog and `.nupkg` assets attached to published releases).
