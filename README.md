@@ -14,16 +14,25 @@ Workflows (click a badge to open the run on GitHub Actions):
 [![codecov](https://codecov.io/gh/antoinebou12/Serilog.Sinks.SentrySDK/branch/main/graph/badge.svg?token=DKLJUGCpI4)](https://codecov.io/gh/antoinebou12/Serilog.Sinks.SentrySDK)
 [![GitHub Release](https://img.shields.io/github/v/release/antoinebou12/Serilog.Sinks.SentrySDK?logo=github&label=GitHub%20release)](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/latest)
 
+NuGet.org all-time downloads (shields.io):
+
+[![Serilog.Sinks.SentrySDK](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg?label=Serilog.Sinks.SentrySDK&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK)
+[![Serilog.Sinks.SentrySDK.AspNetCore](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.svg?label=Serilog.Sinks.SentrySDK.AspNetCore&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore)
+[![Serilog.Sinks.SentrySDK.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.6.svg?label=Serilog.Sinks.SentrySDK.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6)
+[![Serilog.Sinks.SentrySDK.AspNetCore.6](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.6.svg?label=Serilog.Sinks.SentrySDK.AspNetCore.6&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6)
+
 All workflow files live under [`.github/workflows`](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/tree/main/.github/workflows).
 
 ## Available Packages
 
 NuGet.org listings (this repo’s CI publishes the **non-`.6`** ids; **`.6`** ids are the same product line with an alternate package name on NuGet):
 
-| Package | NuGet.org | Version |
-| --- | --- | --- |
-| Serilog.Sinks.SentrySDK.6 | [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) |
-| Serilog.Sinks.SentrySDK.AspNetCore.6 | [Serilog.Sinks.SentrySDK.AspNetCore.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) |
+| Package | NuGet.org | Version | Downloads |
+| --- | --- | --- | --- |
+| Serilog.Sinks.SentrySDK | [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) |
+| Serilog.Sinks.SentrySDK.AspNetCore | [Serilog.Sinks.SentrySDK.AspNetCore](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore) |
+| Serilog.Sinks.SentrySDK.6 | [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) |
+| Serilog.Sinks.SentrySDK.AspNetCore.6 | [Serilog.Sinks.SentrySDK.AspNetCore.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) | [![NuGet](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.6.svg)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore.6) |
 
 **Releases:** [GitHub Releases](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases) (changelog and `.nupkg` assets attached to published releases).
 

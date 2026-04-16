@@ -1,5 +1,10 @@
 # Serilog.Sinks.SentrySDK
 
+[![NuGet Serilog.Sinks.SentrySDK](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.svg?label=Serilog.Sinks.SentrySDK&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK)
+[![NuGet Serilog.Sinks.SentrySDK downloads](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.svg?label=downloads&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK)
+[![NuGet Serilog.Sinks.SentrySDK.AspNetCore](https://img.shields.io/nuget/v/Serilog.Sinks.SentrySDK.AspNetCore.svg?label=Serilog.Sinks.SentrySDK.AspNetCore&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore)
+[![NuGet Serilog.Sinks.SentrySDK.AspNetCore downloads](https://img.shields.io/nuget/dt/Serilog.Sinks.SentrySDK.AspNetCore.svg&label=downloads&logo=nuget)](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.AspNetCore)
+
 A Serilog sink for Sentry that simplifies error and log management. It builds on the Sentry .NET SDK and official Serilog integration.
 
 ## Release 1.0.7.2 and target frameworks
