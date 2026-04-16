@@ -38,6 +38,14 @@ namespace Serilog.Sinks.SentrySDK.AspNetCore.Tests
         }
 
         [Fact]
+        public void RemoteIpAddress_ReturnsEmptyString_WhenRemoteIpAddressIsNull()
+        {
+            _httpContext.Connection.RemoteIpAddress = null;
+
+            Assert.Equal(string.Empty, _aspCoreHttpContextAdapter.RemoteIpAddress);
+        }
+
+        [Fact]
         public void RequestCookies_ReturnsCorrectCookies()
         {
             var expectedCookies = new Dictionary<string, string> { { "cookie1", "value1" }, { "cookie2", "value2" } };

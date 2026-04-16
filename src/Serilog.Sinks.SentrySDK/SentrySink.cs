@@ -364,8 +364,7 @@ namespace Serilog.Sinks.SentrySDK
                                 .ToDictionary(t => t[0], t => t[1]));
                         }
 
-                        scope.SetExtras((logEvent.Exception?.Data ?? new Dictionary<string, object>())
-                        .Cast<KeyValuePair<string, object?>>());
+                        scope.SetExtras(ExceptionDataToScopeExtrasDictionary(logEvent.Exception?.Data));
 
 
                         scope.SetExtras(logEvent.MessageTemplate.Tokens
@@ -483,8 +482,7 @@ namespace Serilog.Sinks.SentrySDK
                             .ToDictionary(t => t[0], t => t[1]));
                     }
 
-                    scope.SetExtras((logEvent.Exception?.Data ?? new Dictionary<string, object>())
-                        .Cast<KeyValuePair<string, object?>>());
+                    scope.SetExtras(ExceptionDataToScopeExtrasDictionary(logEvent.Exception?.Data));
 
                     scope.SetExtras(logEvent.MessageTemplate.Tokens
                         .OfType<PropertyToken>()
@@ -560,6 +558,28 @@ namespace Serilog.Sinks.SentrySDK
                 LogEventLevel.Fatal => SentryLevel.Fatal,
                 _ => SentryLevel.Error
             };
+        }
+
+        static Dictionary<string, object?> ExceptionDataToScopeExtrasDictionary(IDictionary? data)
+        {
+            var dictionary = new Dictionary<string, object?>();
+            if (data == null)
+            {
+                return dictionary;
+            }
+
+            foreach (DictionaryEntry entry in data)
+            {
+                var key = entry.Key?.ToString();
+                if (string.IsNullOrEmpty(key))
+                {
+                    continue;
+                }
+
+                dictionary[key] = entry.Value;
+            }
+
+            return dictionary;
         }
 
         static Dictionary<string, string> RenderPropertyValuesToStringDictionary(
