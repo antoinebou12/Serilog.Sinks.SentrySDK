@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.202" PrivateAssets="All" />
     <PackageReference Include="Sentry" Version="6.3.2" />
     <PackageReference Include="Sentry.Serilog" Version="6.3.2" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
