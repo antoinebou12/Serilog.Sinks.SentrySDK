@@ -8,7 +8,7 @@ on:
       version:
         description: 'Version to build'
         required: true
-        default: '1.0.6'
+        default: '1.0.7.2'
 
 permissions:
   contents: write
@@ -22,7 +22,9 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          6.0.x
+          10.0.x
     - name: Install dependencies - Serilog.Sinks.SentrySDK
       run: dotnet restore src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj
     - name: Install dependencies - Serilog.Sinks.SentrySDK.AspNetCore
@@ -42,11 +44,15 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
-    - name: Test - Serilog.Sinks.SentrySDK.AspNetCore.Tests
-      run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj
-    - name: Test - Serilog.Sinks.SentrySDK.Tests
-      run: dotnet test --no-restore --verbosity normal src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj
+        dotnet-version: |
+          6.0.x
+          10.0.x
+    - name: Restore and test
+      run: |
+        dotnet restore src/Serilog.Sinks.SentrySDK.sln
+        dotnet build src/Serilog.Sinks.SentrySDK.sln --configuration Release --no-restore
+        dotnet test src/Serilog.Sinks.SentrySDK.AspNetCore.Tests/Serilog.Sinks.SentrySDK.AspNetCore.Tests.csproj --configuration Release --no-build --verbosity normal
+        dotnet test src/Serilog.Sinks.SentrySDK.Tests/Serilog.Sinks.SentrySDK.Tests.csproj --configuration Release --no-build --verbosity normal
 
   package:
     needs: test
@@ -56,7 +62,9 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: |
+          6.0.x
+          10.0.x
     - name: Pack Serilog.Sinks.SentrySDK
       run: dotnet pack src/Serilog.Sinks.SentrySDK/Serilog.Sinks.SentrySDK.csproj --configuration Release --output ./nupkgs
     - name: Pack Serilog.Sinks.SentrySDK.AspNetCore
@@ -72,13 +80,16 @@ jobs:
 
   push:
     needs: package
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: |
+            6.0.x
+            10.0.x
       - name: Download NuGet packages
         uses: actions/download-artifact@v8
         with:

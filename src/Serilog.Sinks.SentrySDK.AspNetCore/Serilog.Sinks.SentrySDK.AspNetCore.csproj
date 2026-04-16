@@ -1,35 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>A Sentry sink for Serilog</Description>
-    <VersionPrefix>1.0.6</VersionPrefix>
+    <VersionPrefix>1.0.7.2</VersionPrefix>
+    <Description>ASP.NET Core integration for Serilog.Sinks.SentrySDK (v$(VersionPrefix)). This NuGet package includes net6.0 and net10.0 builds (lib/net6.0, lib/net10.0).</Description>
     <Authors>Antoine Boucher</Authors>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net10.0</TargetFrameworks>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Serilog.Sinks.SentrySDK.AspNetCore</AssemblyName>
     <PackRelease>true</PackRelease>
     <PackageId>Serilog.Sinks.SentrySDK.AspNetCore</PackageId>
     <PackageTags>Serilog Sink Sentry Logging Core</PackageTags>
-    <PackageReleaseNotes>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>$(VersionPrefix): includes net6.0 and net10.0. Release notes: https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>http://serilog.net/images/serilog-sink-nuget.png</PackageIconUrl>
+    <PackageIcon>serilog-sink-nuget.png</PackageIcon>
+    <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/antoinebou12/Serilog.Sinks.SentrySDK</RepositoryUrl>
     <RootNamespace>Serilog.Sinks.SentrySDK.AspNetCore</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
-    <PackageReference Include="Sentry" Version="6.3.1" />
-    <PackageReference Include="Sentry.Serilog" Version="6.3.1" />
+    <PackageReference Include="Sentry" Version="6.3.2" />
+    <PackageReference Include="Sentry.Serilog" Version="6.3.2" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Serilog.Sinks.SentrySDK\Serilog.Sinks.SentrySDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\assets\serilog-sink-nuget.png" Pack="true" PackagePath="\" />
+    <None Include="..\PACKAGE_README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

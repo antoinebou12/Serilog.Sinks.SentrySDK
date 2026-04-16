@@ -29,6 +29,8 @@ NuGet.org listings (this repo’s CI publishes the **non-`.6`** ids; **`.6`** id
 
 **Releases:** [GitHub Releases](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases) (changelog and `.nupkg` assets attached to published releases).
 
+**Release 1.0.7.2** (see `VersionPrefix` in the `.csproj` files): NuGet packages ship **both** `net6.0` and `net10.0` in the same `.nupkg` (`lib/net6.0/`, `lib/net10.0/`). Use a matching GitHub release tag such as **`v1.0.7.2`**. **Publishing to [nuget.org](https://www.nuget.org/)** runs automatically when you **[publish a GitHub Release](https://github.com/antoinebou12/Serilog.Sinks.SentrySDK/releases/new)** (see [.github/workflows/CI.yml](.github/workflows/CI.yml): pack, then push with `NUGET_API_KEY`). Manual [workflow_dispatch](https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow) builds and uploads artifacts only; it does **not** push to NuGet.
+
 ## Installation
 
 The library is available on NuGet as [Serilog.Sinks.SentrySDK](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK) (or [Serilog.Sinks.SentrySDK.6](https://www.nuget.org/packages/Serilog.Sinks.SentrySDK.6) if you prefer that package id).
@@ -40,7 +42,7 @@ dotnet add package Serilog.Sinks.SentrySDK
 Install-Package Serilog.Sinks.SentrySDK
 ```
 
-This package references the **Sentry** NuGet package (**6.3.1**), the same major line as the [Sentry for .NET](https://docs.sentry.io/platforms/dotnet/) documentation. For generic SDK setup (DSN, `SendDefaultPii`, debug), see the official [Quick Start](https://docs.sentry.io/platforms/dotnet/). Initialize the SDK **as early as possible** so startup failures are reported. This sink calls [`SentrySdk.Init`](https://docs.sentry.io/platforms/dotnet/configuration/options/) internally when you configure `WriteTo.Sentry` with a DSN; avoid calling `SentrySdk.Init` again for the same process unless you coordinate a single initialization path.
+This package references the **Sentry** NuGet package (**6.3.2**), the same major line as the [Sentry for .NET](https://docs.sentry.io/platforms/dotnet/) documentation. For generic SDK setup (DSN, `SendDefaultPii`, debug), see the official [Quick Start](https://docs.sentry.io/platforms/dotnet/). Initialize the SDK **as early as possible** so startup failures are reported. This sink calls [`SentrySdk.Init`](https://docs.sentry.io/platforms/dotnet/configuration/options/) internally when you configure `WriteTo.Sentry` with a DSN; avoid calling `SentrySdk.Init` again for the same process unless you coordinate a single initialization path.
 
 ## Demos
 
@@ -48,7 +50,7 @@ Demos demonstrating how to use this library can be found [here](demos/) and in [
 
 ## Build, run tests, and coverage (local development)
 
-**Prerequisites:** [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0) or newer (the projects target `net6.0`).
+**Prerequisites:** [.NET SDK 10](https://dotnet.microsoft.com/download/dotnet/10.0) to build and run tests. The published libraries **multi-target** `net6.0` and `net10.0` (one package includes both under `lib/`). CI also installs the **6.0.x** SDK band so `net6.0` targets build cleanly on the runner.
 
 From the repository root:
 
@@ -127,7 +129,7 @@ You can also configure Serilog using a JSON configuration. Here's a sample:
           "diagnosticLevel": "Error",
           "environment": "Development",
           "operationName": "SentryConsole",
-          "release": "1.0.5",
+          "release": "1.0.7.2",
           "serverName": "SentryConsole",
           "distribution": "SentryConsole",
           "tags": "SentryConsole=SentryConsole",
@@ -220,7 +222,7 @@ With these steps, your logs will include detailed information about the HTTP con
 
 ## Sentry SDK
 
-Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platforms/dotnet/configuration/options/) (this package references Sentry **6.3.1**). The **This sink** column describes how each member relates to `WriteTo.Sentry` in this library.
+Reference for the Sentry .NET SDK [`SentryOptions`](https://docs.sentry.io/platforms/dotnet/configuration/options/) (this package references Sentry **6.3.2**). The **This sink** column describes how each member relates to `WriteTo.Sentry` in this library.
 
 ### Properties
 
@@ -278,7 +280,7 @@ These parameters are part of the Serilog configuration API but are not direct `S
 | `configureSentryOptions` | Optional `Action<SentryOptions>` for init-time flags (for example structured logs or metrics). |
 | `beforeSend` | Optional `Func<SentryEvent, SentryHint, SentryEvent?>` chained after internal `EventId` handling. |
 
-### Further reading (Sentry .NET **6.3.1**)
+### Further reading (Sentry .NET **6.3.2**)
 
 - [Data Management](https://docs.sentry.io/platforms/dotnet/data-management/) — overview of collection, scrubbing, and debug symbols.
 - [Metrics](https://docs.sentry.io/platforms/dotnet/) (product docs: **Metrics**, beta) — `SentrySdk.Metrics` (SDK **≥ 6.1**); options such as **`EnableMetrics`** and **`SetBeforeSendMetric`** are set on `SentryOptions` at init.
