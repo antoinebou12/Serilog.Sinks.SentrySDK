@@ -40,7 +40,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
     <PackageReference Include="Sentry" Version="6.4.1" />
     <PackageReference Include="Sentry.Serilog" Version="6.4.1" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
